@@ -102,10 +102,6 @@ if ($_SESSION['admin'] == "1" or $_SESSION['admin'] == "2") {
 ?>
                         <li class="divider"></li>
                         <li><a href="<?php echo $dircheckPath; ?>settings"> <?php echo lang('settings'); ?></a></li>
-                        <li><a href="#" data-toggle="modal" data-target="#alertModal"> <?php echo lang('terms'); ?></a></li>
-                        <li><a href="#" data-toggle="modal" data-target="#alertModal"> <?php echo lang('privacyPolicy'); ?></a></li>
-                        <li><a href="<?php echo $dircheckPath; ?>page/supportbox"> <?php echo lang('supportBox'); ?></a></li>
-                        <li><a href="<?php echo $dircheckPath; ?>page/report"> <?php echo lang('Report_A_Problem'); ?></a></li>
                         <li><a href="<?php echo $dircheckPath; ?>logout"> <?php echo lang('logout'); ?></a></li>
                     </ul>
                 </li>

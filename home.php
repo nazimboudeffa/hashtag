@@ -49,7 +49,6 @@ echo "<span style='cursor:pointer;width:95%;display:inline-flex;margin:5px;'><a 
 ?>
 </div>
 <a href="./u/<?php echo $_SESSION['Username']; ?>&ut=photos"><p class="<?php echo lang('HLP_b'); ?>"><img src="imgs/main_icons/1f5fb.png" /> <?php echo lang('my_photos'); ?></p></a>
-<a href="./settings"><p class="<?php echo lang('HLP_b'); ?>"><img src="imgs/main_icons/2699.png" /> <?php echo lang('settings'); ?></p></a>
 <!-- START PLUGINS -->
 
 <!-- END PLUGINS -->
