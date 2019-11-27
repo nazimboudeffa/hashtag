@@ -37,7 +37,7 @@ while ($comments_fetch = $show_comments->fetch(PDO::FETCH_ASSOC)) {
         }else{
         $verifypage_var = "";
     }
-    $uProfilePic_path = $check_path."imgs/user_imgs/$query_fetch_userphoto2";
+    $uProfilePic_path = $config['WebSiteRootURL']."imgs/user_imgs/$query_fetch_userphoto2";
     $uProfileUrl = $check_path."u/$query_fetch_username2";
     $em_img_path = $check_path."imgs/emoticons/";
     $comm_body = str_replace($em_char,$em_img,$content_4comm);

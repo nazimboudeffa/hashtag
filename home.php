@@ -49,11 +49,11 @@ echo "<span style='cursor:pointer;width:95%;display:inline-flex;margin:5px;'><a 
 ?>
 </div>
 <a href="./u/<?php echo $_SESSION['Username']; ?>&ut=photos"><p class="<?php echo lang('HLP_b'); ?>"><img src="imgs/main_icons/1f5fb.png" /> <?php echo lang('my_photos'); ?></p></a>
+<a href="posts/saved"><p class="<?php echo lang('HLP_b'); ?>"><img src="imgs/main_icons/1f516.png" /> <?php echo lang('saved_posts'); ?></p></a>
 <!-- START PLUGINS -->
 
 <!-- END PLUGINS -->
 <p class="homeLinks_title"><?php echo lang('more'); ?></p>
-<a href="./posts/saved"><p class="<?php echo lang('HLP_b'); ?>"><img src="imgs/main_icons/1f516.png" /> <?php echo lang('saved_posts'); ?></p></a>
 <a href="page/supportbox"><p class="<?php echo lang('HLP_b'); ?>"><img src="imgs/main_icons/1f4e5.png" /> <?php echo lang('supportBox'); ?></p></a>
 <a href="page/report"><p class="<?php echo lang('HLP_b'); ?>"><img src="imgs/main_icons/1f4e4.png" /> <?php echo lang('Report_A_Problem'); ?></p></a>
     </div>

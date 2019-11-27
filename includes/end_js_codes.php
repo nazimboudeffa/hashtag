@@ -30,7 +30,7 @@ $('#LoadMorePostsBtn').hide();
         }
     });
 }
-document.getElementById('GetLimitOfPosts').value = 0;
+//document.getElementById('GetLimitOfPosts').value = 0;
 //==================================================================
 function followUnfollow(id){
     $.ajax({
@@ -492,20 +492,21 @@ $.ajax({
 // messages requsets like search or fetch users and send .....
 function mLoadUsers(){
 mLoadUsers2();
-var requ = "getUsers";
-var path = "<?php echo $config['WebSiteRootURL']; ?>";
-$.ajax({
-    type:'POST',
-    url:"<?php echo $config['WebSiteRootURL']; ?>includes/m_requests.php",
-    data:{'req':requ,'path':path},
-    success:function(data){
-     if (data =='') {
-        $('#m_contacts_friends').html("<p style='margin: 0px 8px; text-align: center; color: grey; background: rgba(0, 0, 0, 0.03); padding: 8px 0px; border-radius: 3px;'><?php echo lang('nothingToShow'); ?></p>");
-     }else{
-     $('#m_contacts_friends').html(data);
-     }
-    }
-});
+  var requ = "getUsers";
+  var path = "<?php echo $config['WebSiteRootURL']; ?>";
+  $.ajax({
+      type:'POST',
+      url:"<?php echo $config['WebSiteRootURL']; ?>includes/m_requests.php",
+      data:{'req':requ,'path':path},
+      success:function(data){
+        console.log(data);
+       if (data =='') {
+          $('#m_contacts_friends').html("<p style='margin: 0px 8px; text-align: center; color: grey; background: rgba(0, 0, 0, 0.03); padding: 8px 0px; border-radius: 3px;'><?php echo lang('nothingToShow'); ?></p>");
+       }else{
+       $('#m_contacts_friends').html(data);
+       }
+      }
+  });
 }
 function mLoadUsers2(){
 var requ = "getUsers2";
@@ -577,6 +578,9 @@ $.ajax({
         $('.mCol3_userInfo').html(data[0]);
         $('.mCol3_bio').html(data[1]);
         $('.mCol2_title').html(data[2]);
+    },
+    error:function(){
+        alert('Some problem occured, please try again.');
     }
 });
 }

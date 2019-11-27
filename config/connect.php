@@ -17,7 +17,7 @@ catch(PDOException $e)
 error_reporting(E_NOTICE ^ E_ALL);
 
 if (!isset($config['SystemRootPath'])) {
-    include "../config/config.php";
+    include "config/config.php";
 }
 include $config['SystemRootPath']."langs/set_lang.php";
 
