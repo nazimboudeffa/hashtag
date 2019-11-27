@@ -10,6 +10,8 @@ Open your phpmyadmin and create a new database and call it **hashtag** then impo
 
 Edit connect.php file in config folder and set the username and password of the database you've created
 
+Don't miss to change the paths in config.php
+
 ## Usage
 
 When you sign up the first time into your social network, you will be the main admin of website and you can add more admins from the dashboard
