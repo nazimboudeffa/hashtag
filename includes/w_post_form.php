@@ -19,27 +19,19 @@
     bottom: 0;
     }
 </style>
-<?php
-if (is_dir("imgs/")) {
-    $imagePath = "imgs/";
-} elseif (is_dir("../imgs/")) {
-    $imagePath = "../imgs/";
-} elseif (is_dir("../../imgs/")) {
-    $imagePath = "../../imgs/";
-}
-?>
+
 <div class="post" style="text-align:<?php echo lang('w_post_align'); ?>;direction: <?php echo lang('w_post_dir'); ?>">
 <table class="WritePostUserI">
 <tr>
 <td style='width:50px;'>
-<div class='username_OF_postImg'><img src="<?php echo $imagePath; ?>user_imgs/<?php echo $_SESSION['Userphoto']; ?>"></div>
+<div class='username_OF_postImg'><img src="<?php echo $config['WebSiteRootURL']; ?>imgs/user_imgs/<?php echo $_SESSION['Userphoto']; ?>"></div>
 </td>
 <td style="padding: 10px 0px">
-<a href="<?php echo $check_path; ?>u/<?php echo $_SESSION['Username']; ?>"><?php echo $_SESSION['Fullname']; ?></a><br/>
+<a href="<?php echo $config['WebSiteRootURL']; ?>u/<?php echo $_SESSION['Username']; ?>"><?php echo $_SESSION['Fullname']; ?></a><br/>
 <span class='username_OF_postTime'>@<?php echo $_SESSION['Username']; ?></span>
 </td>
 </table>
-<form id="postingToDB" action="<?php echo $check_path; ?>includes/wpost.php" method="post" enctype="multipart/form-data" style="margin: 0;">
+<form id="postingToDB" action="<?php echo $config['SystemRootPath']; ?>includes/wpost.php" method="post" enctype="multipart/form-data" style="margin: 0;">
 <div id="w_text" class="wpost_tabcontent" style="display:block;padding: 0px">
     <textarea dir="auto" id="lang_rtl_ltr" class="post_textbox" placeholder="<?php echo lang('post_textbox_placeholder'); ?>" name="post_textbox" ></textarea>
 </div>
@@ -62,7 +54,7 @@ if (is_dir("imgs/")) {
 </div>
 <div id="w_title" class="wpost_tabcontent">
 <input type="text" name="w_title" maxlength="100" id="your_title" placeholder="<?php echo lang('w_title_inputText'); ?>" class="flat_solid_textfield"></input>
-<input type="hidden" name="check_path" value="<?php echo $check_path; ?>" />
+<input type="hidden" name="check_path" value="<?php echo $config['WebSiteRootURL']; ?>" />
 / 100
 </div>
 <div>

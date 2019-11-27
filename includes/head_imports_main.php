@@ -25,7 +25,7 @@ window.onbeforeunload = function(){
 <link rel="stylesheet" href="<?php echo $config['WebSiteRootURL']; ?>css/style.css" />
 <link rel="stylesheet" type="text/css" href="<?php echo $config['WebSiteRootURL']; ?>css/font-awesome-4.5.0/css/font-awesome.min.css">
 <script src="<?php echo $config['WebSiteRootURL']; ?>js/jquery.min.js"></script>
-<script src="<?php echo $config['WebSiteRootURL']; ?>jquery.form.min.js"></script>
+<script src="<?php echo $config['WebSiteRootURL']; ?>js/jquery.form.min.js"></script>
 <link rel="stylesheet" href="<?php echo $config['WebSiteRootURL']; ?>css/bootstrap.min.css">
 <script src="<?php echo $config['WebSiteRootURL']; ?>js/bootstrap.min.js"></script>
 <script src="<?php echo $config['WebSiteRootURL']; ?>js/code.js"></script>

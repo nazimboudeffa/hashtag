@@ -3,7 +3,7 @@
 function fetchPosts_DB(fetchFrom){
 var plimit = $("#GetLimitOfPosts").val();
 var rid = "<?php echo $row_id; ?>";
-var path = "<?php echo $check_path; ?>";
+var path = "<?php echo $config['WebSiteRootURL']; ?>";
 $('#LoadMorePostsBtn').hide();
     $.ajax({
         url: "<?php echo $config['WebSiteRootURL'] ; ?>includes/fetch_posts_"+fetchFrom+".php",
@@ -337,7 +337,7 @@ if($('#em_'+cid).attr('data-emtog') == '0'){
     $('#em_'+cid).show();
     $('#em_'+cid).attr('data-emtog','1');
     if(checkData.length == 0){
-        var path = "<?php echo $check_path; ?>";
+        var path = "<?php echo $config['WebSiteRootURL']; ?>";
         var emType = "comment";
         $.ajax({
         type:"POST",
