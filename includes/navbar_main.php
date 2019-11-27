@@ -25,19 +25,10 @@ if ($uCheckSessionCount == 0) {
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="<?php echo $dircheckPath; ?>home">Hashtag</a>
+            <a class="navbar-brand" href="<?php echo $config['WebSiteRootURL']; ?>home">Hashtag</a>
         </div>
         <div class="collapse navbar-collapse" id="myNavbar">
             <ul class="<?php echo lang('ul_navbar_nav1'); ?>">
-                <?php
-if (is_file("home.php")) {
-    $homePath = "home";
-} elseif (is_file("../home.php")) {
-    $homePath = "../home";
-} elseif (is_file("../../home.php")) {
-    $homePath = "../../home";
-}
-?>
                 <li><a href="javascript:void(0);" style="padding: 16px 10px;" id="nav_Noti_Btn"><span class="fa fa-bell"></span> <?php echo lang('notifications'); ?> <span id="notificationsCount"></span></a>
                 <div class="navbar_fetchBox" id="notifications_box">
                 <div style="position:relative;padding: 5px 10px;border-bottom: 1px solid #ccc;text-align: <?php echo lang('textAlign'); ?>"><?php echo lang('notifications'); ?>
@@ -46,13 +37,13 @@ if (is_file("home.php")) {
                 <div id="notifications_rP" class="scrollbar" style="max-height: 450px; overflow-y: scroll;">
                     <div id="notifications_r" data-load="0">
                         <div id="notifications_data"></div>
-                        <p style='width: 100%;border:none;display: none' id="notifications_loading" align='center'><img src='<?php echo $dircheckPath; ?>imgs/loading_video.gif' style='width:20px;box-shadow: none;height: 20px;'></p>
+                        <p style='width: 100%;border:none;display: none' id="notifications_loading" align='center'><img src='<?php echo $config['WebSiteRootURL']; ?>imgs/loading_video.gif' style='width:20px;box-shadow: none;height: 20px;'></p>
                         <p id="notifications_noMore" style='display:none;color:#9a9a9a;font-size:14px;text-align:center;'><?php echo lang('no_notifications'); ?></p>
                         <input type="hidden" id="notifications_load" value="0">
                     </div>
                 </div>
                 <div id='sqresultItem' align='center' style='background: #efefef; border: 1px solid #e0e0e0;'>
-                <a href='<?php echo $dircheckPath; ?>notifications'>
+                <a href='<?php echo $config['WebSiteRootURL']; ?>notifications'>
                 <div style='display: inline-flex;width: 100%;'>
                 <p style='font-size:13px;'><?php echo lang('see_all'); ?>
                 </p>
@@ -62,7 +53,7 @@ if (is_file("home.php")) {
                 </div>
                 <div id="nav_newNotify" data-show='0'></div>
                 </li>
-                <li><a href="<?php echo $dircheckPath; ?>messages/" style="padding: 16px 10px;"><span class="fa fa-envelope"></span> <?php echo lang('messages'); ?> <span id="messagesCount"></span></a>
+                <li><a href="<?php echo $config['WebSiteRootURL']; ?>messages/" style="padding: 16px 10px;"><span class="fa fa-envelope"></span> <?php echo lang('messages'); ?> <span id="messagesCount"></span></a>
                 </li>
             </ul>
             <ul class="<?php echo lang('ul_navbar_nav2'); ?>">
@@ -73,18 +64,18 @@ if (is_file("home.php")) {
                  <div  id="getSearchResult" class="scrollbar" style="overflow: auto;max-height: 450px;"></div>
                  <p  id="LoadingSearchResult" style="background: url(imgs/loading_video.gif) center center no-repeat;width: 100%;height: 80px;margin: 0px;display: none;"></p>
                 </div>
-                <li class="dropdown"><a href="<?php echo $dircheckPath; ?>u/<?php echo $_SESSION['Username']; ?>" style="padding-bottom: 0px;padding-top: 9px;" class="dropdown-toggle" data-toggle="dropdown">
+                <li class="dropdown"><a href="<?php echo $config['WebSiteRootURL']; ?>u/<?php echo $_SESSION['Username']; ?>" style="padding-bottom: 0px;padding-top: 9px;" class="dropdown-toggle" data-toggle="dropdown">
                         <div style="width: 36px;height: 36px;border-radius: 100%;overflow: hidden;background: #fff;">
-                            <img style="width: auto;height: 100%;" src="<?php echo $dircheckPath . 'imgs/user_imgs/' . $_SESSION['Userphoto']; ?>">
+                            <img style="width: auto;height: 100%;" src="<?php echo $config['WebSiteRootURL'] . 'imgs/user_imgs/' . $_SESSION['Userphoto']; ?>">
                         </div></a>
                     <ul class="dropdown-menu" style="margin-top: 8px;text-align: <?php echo lang('textAlign'); ?>">
                      <li class='dropdown-header'><?php echo lang('navbar_uMenu_UserProfile'); ?></li>
-                        <li><a href="<?php echo $dircheckPath; ?>u/<?php echo $_SESSION['Username']; ?>">
+                        <li><a href="<?php echo $config['WebSiteRootURL']; ?>u/<?php echo $_SESSION['Username']; ?>">
                                <table style="width: 200px; font-size: 15px;">
                                    <tr>
                                        <td style="width: 32px;">
                                            <div style="border: 1px solid rgba(0, 0, 0, 0.1);width: 32px;height: 32px;overflow: hidden;border-radius:2px;">
-                                               <img style="width:auto;height:100%;" src="<?php echo $dircheckPath . 'imgs/user_imgs/' . $_SESSION['Userphoto']; ?>">
+                                               <img style="width:auto;height:100%;" src="<?php echo $config['WebSiteRootURL'] . 'imgs/user_imgs/' . $_SESSION['Userphoto']; ?>">
                                            </div>
                                        </td>
                                        <td style="padding: 0px 5px"><?php echo $_SESSION['Fullname'] . "<br><span style='color: #848484; font-size: 13px;'>@" . $_SESSION['Username'] . "</span>"; ?></td>
@@ -96,13 +87,13 @@ if ($_SESSION['admin'] == "1" or $_SESSION['admin'] == "2") {
     echo "
                             <li class=\"divider\"></li>
                             <li class='dropdown-header'>" . lang('adminOptions') . "</li>
-                        <li><a href=\"" . $dircheckPath . "toacpnlp/?adb=General\"> " . lang('dashboard') . "</a></li>
+                        <li><a href=\"" . $config['WebSiteRootURL'] . "toacpnlp/?adb=General\"> " . lang('dashboard') . "</a></li>
                             ";
 }
 ?>
                         <li class="divider"></li>
-                        <li><a href="<?php echo $dircheckPath; ?>settings"> <?php echo lang('settings'); ?></a></li>
-                        <li><a href="<?php echo $dircheckPath; ?>logout"> <?php echo lang('logout'); ?></a></li>
+                        <li><a href="<?php echo $config['WebSiteRootURL']; ?>settings"> <?php echo lang('settings'); ?></a></li>
+                        <li><a href="<?php echo $config['WebSiteRootURL']; ?>logout"> <?php echo lang('logout'); ?></a></li>
                     </ul>
                 </li>
             </ul>
@@ -110,4 +101,4 @@ if ($_SESSION['admin'] == "1" or $_SESSION['admin'] == "2") {
     </div>
 </nav>
 <div style="" id='nSound'></div>
-<?php include ($dircheckPath . "js/navbar_nottifi_js.php"); ?>
+<?php //include ($config['SystemRootPath'] . "js/navbar_nottifi_js.php"); ?>

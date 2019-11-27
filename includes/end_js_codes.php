@@ -6,7 +6,7 @@ var rid = "<?php echo $row_id; ?>";
 var path = "<?php echo $check_path; ?>";
 $('#LoadMorePostsBtn').hide();
     $.ajax({
-        url: "<?php echo $check_path; ?>includes/fetch_posts_"+fetchFrom+".php",
+        url: "<?php echo $config['WebSiteRootURL'] ; ?>includes/fetch_posts_"+fetchFrom+".php",
         type: "POST",
         data: {"path":path, "plimit":plimit, "rid":rid},
         beforeSend:function(){
@@ -247,12 +247,12 @@ function hideMsg(){
 function savePost(pid,path){
 var myid = "<?php echo $_SESSION['id']; ?>";
 $.ajax({
-    url:"<?php echo $check_path; ?>includes/send_saved_postDB.php",
+    url:"<?php echo $config['WebSiteRootURL'] ; ?>includes/send_saved_postDB.php",
     type:"POST",
     data:{"pid":pid, "myid":myid, "path":path},
     beforeSend:function(){
     $('#postNotify_'+pid).slideDown(300,function(){
-    $('#postNotify_'+pid).html("<p class='postNotify' style='text-align:<?php echo lang('textAlign'); ?>;'><img src='<?php echo $check_path; ?>imgs/loading_video.gif' style='width:20px;box-shadow: none;height: 20px;'> <?php echo lang('please_wait'); ?></p>");
+    $('#postNotify_'+pid).html("<p class='postNotify' style='text-align:<?php echo lang('textAlign'); ?>;'><img src='<?php echo $config['WebSiteRootURL'] ; ?>imgs/loading_video.gif' style='width:20px;box-shadow: none;height: 20px;'> <?php echo lang('please_wait'); ?></p>");
     });
     },
     success:function(data){
@@ -281,7 +281,7 @@ function cancelSavedMsg(sid){
 }
 function deleteSaved(sid){
 $.ajax({
-    url:"<?php echo $check_path; ?>includes/deleteSavedPost.php",
+    url:"<?php echo $config['WebSiteRootURL'] ; ?>includes/deleteSavedPost.php",
     type:"POST",
     data:"sid="+sid,
     beforeSend:function(){
@@ -298,7 +298,7 @@ $.ajax({
 function starPage(uid,pid){
 $.ajax({
     type:"POST",
-    url: "<?php echo $check_path; ?>includes/r_star.php",
+    url: "<?php echo $config['WebSiteRootURL'] ; ?>includes/r_star.php",
     data:{'uid':uid,'pid':pid},
     beforeSend:function(){
         $('#rate_star').html("<button class='follow_btn' onclick='starPage(\"$uid\",\"$pid\")' style='width:100%;margin:0px 3px;border-color:#ffc107;padding:10px 15px;' title='<?php echo lang('unstar'); ?>'><span class='fa fa-star' style='color:#FFC107;font-size:18px;'></span></button>");
@@ -341,7 +341,7 @@ if($('#em_'+cid).attr('data-emtog') == '0'){
         var emType = "comment";
         $.ajax({
         type:"POST",
-        url: "<?php echo $check_path; ?>includes/emoticons_c_m.php",
+        url: "<?php echo $config['WebSiteRootURL'] ; ?>includes/emoticons_c_m.php",
         data:{'path':path,'cid':cid,'emType':emType},
         beforeSend:function(){
         $('#em_'+cid).show();
@@ -405,12 +405,12 @@ function fcomment(txtfid){
 }
 function sharePost(pid,path){
 $.ajax({
-    url:"<?php echo $check_path; ?>includes/share.php",
+    url:"<?php echo $config['WebSiteRootURL'] ; ?>includes/share.php",
     type:"POST",
     data:{"pid":pid, "path":path},
     beforeSend:function(){
     $('#postNotify2_'+pid).slideDown(300,function(){
-    $('#postNotify2_'+pid).html("<p class='postNotify' style='text-align:<?php echo lang('textAlign'); ?>;'><img src='<?php echo $check_path; ?>imgs/loading_video.gif' style='width:20px;box-shadow: none;height: 20px;'> <?php echo lang('please_wait'); ?></p>");
+    $('#postNotify2_'+pid).html("<p class='postNotify' style='text-align:<?php echo lang('textAlign'); ?>;'><img src='<?php echo $config['WebSiteRootURL'] ; ?>imgs/loading_video.gif' style='width:20px;box-shadow: none;height: 20px;'> <?php echo lang('please_wait'); ?></p>");
     });
     },
     success:function(data){
@@ -432,7 +432,7 @@ $.ajax({
     data:{'type':type,'fid':fid},
     beforeSend:function(){
     $('#postNotify_'+fid).slideDown(300,function(){
-    $('#postNotify_'+fid).html("<p class='postNotify'><img src='<?php echo $check_path; ?>imgs/loading_video.gif' style='width:20px;box-shadow: none;height: 20px;'> Sending your report...</p>");
+    $('#postNotify_'+fid).html("<p class='postNotify'><img src='<?php echo $config['WebSiteRootURL'] ; ?>imgs/loading_video.gif' style='width:20px;box-shadow: none;height: 20px;'> Sending your report...</p>");
     });
     },
     success:function(data){
