@@ -17,7 +17,3 @@ When you sign up the first time into your social network, you will be the main a
 ## About
 
 Hashtag is an opensource social network made in PHP that have been abondoned and was orginally called [Wallstant](https://github.com/munafio/wallstant-the-open-source-PHP-social-network)
-
-## Ressources
-
-https://openmoji.org
