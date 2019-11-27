@@ -149,7 +149,7 @@ switch ($req) {
             echo "<p class='alertRed'>" . lang('invalid_email_address') . "</p>";
         } else {
             // If who users is the first user, make it [main admin]
-            $cusers_q_sql = "SELECT id FROM signup";
+            $cusers_q_sql = "SELECT id FROM users";
             $cusers_q = $con->prepare($cusers_q_sql);
             $cusers_q->execute();
             $cusers_q_num_rows = $cusers_q->rowCount();
