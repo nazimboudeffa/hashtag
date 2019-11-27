@@ -31,7 +31,7 @@
 <span class='username_OF_postTime'>@<?php echo $_SESSION['Username']; ?></span>
 </td>
 </table>
-<form id="postingToDB" action="<?php echo $config['SystemRootPath']; ?>includes/wpost.php" method="post" enctype="multipart/form-data" style="margin: 0;">
+<form id="postingToDB" action="<?php echo $config['WebSiteRootURL']; ?>includes/wpost.php" method="post" enctype="multipart/form-data" style="margin: 0;">
 <div id="w_text" class="wpost_tabcontent" style="display:block;padding: 0px">
     <textarea dir="auto" id="lang_rtl_ltr" class="post_textbox" placeholder="<?php echo lang('post_textbox_placeholder'); ?>" name="post_textbox" ></textarea>
 </div>
@@ -105,6 +105,7 @@ $(".loadingPostingP").css({'width' : percentCompelete + '%'});
 $(".loadingPostingP").html(percentCompelete);
 },
 success:function(data){
+  console.log(data);
 $("#postingToDB").slideDown(function(){
     $('.loadingPosting').slideUp(function(){
         $("#FetchingNewPostsDiv"+plus).html(data);

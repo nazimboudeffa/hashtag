@@ -7,7 +7,7 @@ $get_post_author_photo = $postsfetch['post_author_photo'];
 $get_post_img = $postsfetch['post_img'];
 $get_post_time = $postsfetch['post_time'];
 $get_post_content = $postsfetch['post_content'];
-$session_userphoto_path = $check_path."imgs/user_imgs/";
+$session_userphoto_path = $config['WebSiteRootURL']."imgs/user_imgs/";
 $session_userphoto = $session_userphoto_path . $_SESSION['Userphoto'];
 $timeago = time_ago($get_post_time);
 $get_post_title = $postsfetch['p_title'];
@@ -28,7 +28,7 @@ $p_title = $get_post_title;
 if (!empty($get_post_shared)) {
     $p_title = lang('shared_a_Post');
 }
-$qsql = "SELECT * FROM signup WHERE id=:get_author_id";
+$qsql = "SELECT * FROM users WHERE id=:get_author_id";
 $query = $con->prepare($qsql);
 $query->bindParam(':get_author_id', $get_author_id, PDO::PARAM_INT);
 $query->execute();
@@ -66,19 +66,12 @@ if($chShareCount == 0){
     $shareCount = thousandsCurrencyFormat($chShareCount)." ".lang('shares')."";
 }
 
-$imgs_path = $check_path."imgs/";
+$imgs_path = $config['WebSiteRootURL']."imgs/";
 $em_img_path = $imgs_path."emoticons/";
-if (is_file("config/connect.php")) {
-    $includePath = "includes/";
-}elseif (is_file("../config/connect.php")) {
-    $includePath = "../includes/";
-}elseif (is_file("config/connect.php")) {
-    $includePath = "../../includes/";
-}
 
-include ($includePath."emoticons.php");
+include ($config['SystemRootPath']."includes/emoticons.php");
 $post_body = str_replace($em_char,$em_img,$get_post_content);
-$hashtag_path = $check_path."hashtag/";
+$hashtag_path = $config['WebSiteRootURL']."hashtag/";
 $hashtags_url = '/(\#)([x00-\xFF]+[a-zA-Z0-9x00-\xFF_\w]+)/';
 $url = '/(http|https|ftp|ftps)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(\:[0-9]+)?(\/\S*)?/';
 $body = preg_replace($url, '<a href="$0" target="_blank" title="$0">$0</a>', $post_body);
@@ -97,8 +90,8 @@ $body = nl2br("$body");
     <td style='width:50px;'>
     <div class='username_OF_postImg'><img src=\"".$imgs_path."user_imgs/$query_fetch_userphoto\"></div><td>
     <td>
-    <a href='".$check_path."u/$query_fetch_username' class='username_OF_postLink'>$query_fetch_fullname</a><br/>
-    <a href='".$check_path."posts/post?pid=".$get_post_id."' class='username_OF_postTime'>$timeago</a>
+    <a href='".$config['WebSiteRootURL']."u/$query_fetch_username' class='username_OF_postLink'>$query_fetch_fullname</a><br/>
+    <a href='".$config['WebSiteRootURL']."posts/post?pid=".$get_post_id."' class='username_OF_postTime'>$timeago</a>
     </td>
     <td>
     <div class='dropdown'>
@@ -112,7 +105,7 @@ $body = nl2br("$body");
     <li class='divider'></li>";
         }
     echo "
-    <li><a href='javascript:void(0)' onclick=\"savePost('$get_post_id','$check_path')\"><span class='fa fa-bookmark'></span> ".lang('savePost_DDM')."</a></li>
+    <li><a href='javascript:void(0)' onclick=\"savePost('$get_post_id','".$config['WebSiteRootURL']."')\"><span class='fa fa-bookmark'></span> ".lang('savePost_DDM')."</a></li>
     <li><a href='javascript:void(0)' onclick=\"reportpost('post','$get_post_id')\"><span class='fa fa-bug'></span> ".lang('reportPost_DDM')."</a></li>
     </ul>
     </div>
@@ -140,7 +133,7 @@ $body = nl2br("$body");
     <input type='text' dir='auto' class='flat_solid_textfield' id='EditTitleBox_$get_post_id' style='min-height: auto;' placeholder='".lang('w_title_inputText')."' value='$p_title' />
     <textarea dir='auto' class='postContent_EditBox' id='EditBox_$get_post_id'>$get_post_content</textarea>
     <div>
-    <a href='javascript:void(0)' onclick=\"editPost_save('$get_post_id','$check_path')\" class='default_flat_btn'>".lang('save')."</a>
+    <a href='javascript:void(0)' onclick=\"editPost_save('$get_post_id','".$config['WebSiteRootURL']."')\" class='default_flat_btn'>".lang('save')."</a>
     <a href='javascript:void(0)' onclick=\"editPost_cancel('$get_post_id')\" class='silver_flat_btn'>".lang('cancel')."</a>
     <select id='p_privacy_$get_post_id' style='padding: 8px 10px;'>
         <option $pub_privacySelected>".lang('wpr_public')."</option>
@@ -172,7 +165,7 @@ while ($sharedRow = $fetch_shared->fetch(PDO::FETCH_ASSOC)) {
     $shP_time = $sharedRow['post_time'];
     $shP_timeago = time_ago($shP_time);
 
-    $who_shareInfo = $con->prepare("SELECT * FROM signup WHERE id=:shP_aid ");
+    $who_shareInfo = $con->prepare("SELECT * FROM users WHERE id=:shP_aid ");
     $who_shareInfo->bindParam(':shP_aid',$shP_aid,PDO::PARAM_INT);
     $who_shareInfo->execute();
     while ($user_row = $who_shareInfo->fetch(PDO::FETCH_ASSOC)) {
@@ -182,7 +175,7 @@ while ($sharedRow = $fetch_shared->fetch(PDO::FETCH_ASSOC)) {
     }
 
 $sh_post_body = str_replace($em_char,$em_img,$shP_content);
-$sh_hashtag_path = $check_path."hashtag/";
+$sh_hashtag_path = $config['WebSiteRootURL']."hashtag/";
 $sh_hashtags_url = '/(\#)([x00-\xFF]+[a-zA-Z0-9x00-\xFF_\w]+)/';
 $sh_url = '/(http|https|ftp|ftps)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(\:[0-9]+)?(\/\S*)?/';
 $sh_body = preg_replace($sh_url, '<a href="$0" target="_blank" title="$0">$0</a>', $sh_post_body);
@@ -199,10 +192,10 @@ echo "
 <table style=\"width:100%;\">
 <tbody><tr>
 <td style=\"width:50px;\">
-<div class=\"username_OF_postImg\"><img src=\"".$check_path."imgs/user_imgs/$shU_up\"></div></td><td>
+<div class=\"username_OF_postImg\"><img src=\"".$config['WebSiteRootURL']."imgs/user_imgs/$shU_up\"></div></td><td>
 </td><td>
-<a href=\"".$check_path."u/$shU_un\" class=\"username_OF_postLink\">$shU_fn</a><br>
-<a href=\"".$check_path."posts/post?pid=$shP_id\" class=\"username_OF_postTime\">$shP_timeago</a>
+<a href=\"".$config['WebSiteRootURL']."u/$shU_un\" class=\"username_OF_postLink\">$shU_fn</a><br>
+<a href=\"".$config['WebSiteRootURL']."posts/post?pid=$shP_id\" class=\"username_OF_postTime\">$shP_timeago</a>
 </td>
 </tr>
 </tbody></table>
@@ -214,7 +207,7 @@ echo "</div><div class=\"post_content\" style=\"text-align:left;\">
 <p dir=\"auto\" id=\"postContent_$shP_id\" style='text-align: ".lang('textAlign').";'>$sh_body";
 echo "</p>";
 if (!empty($shP_img)) {
-echo "<img onclick=\"lightbox('$shP_id')\" id=\"lightboxImg_$shP_id\" src=\"".$check_path."imgs/$shP_img\" alt=\"$shU_fn\">";
+echo "<img onclick=\"lightbox('$shP_id')\" id=\"lightboxImg_$shP_id\" src=\"".$config['WebSiteRootURL']."imgs/$shP_img\" alt=\"$shU_fn\">";
 }
 echo "
 </div>
@@ -252,7 +245,7 @@ if ($likes_num == 0) {
     $likenum = thousandsCurrencyFormat($likes_num)." <span class='fa fa-heart' style='color: #ff928a;'></span>";
 }
 
-echo "<a href='javascript:void(0);' onclick=\"sharePost('$get_post_id','$check_path')\" class='post_like_comment_shareA' data-toggle='tooltip' data-placement='top' title='".lang('share_now')."'><span class=\"fa fa-share-alt\"></span></a>
+echo "<a href='javascript:void(0);' onclick=\"sharePost('$get_post_id','".$config['WebSiteRootURL']."')\" class='post_like_comment_shareA' data-toggle='tooltip' data-placement='top' title='".lang('share_now')."'><span class=\"fa fa-share-alt\"></span></a>
     <p class='comment_details' style='text-align:".lang('textAlign').";'>
     <span id='postLikeCount_$get_post_id'>$likenum</span><span style='margin: 0px 5px;padding: 1px;'></span>
     <span id='postCommCount_$get_post_id'>$chtcnum</span><span style='margin: 0px 5px;padding: 1px;'></span>
@@ -267,7 +260,7 @@ echo"
 </div>
 <div id='writeComm_$get_post_id'>
 <div style='position:relative;display:flex;background: #fff; box-shadow: 2px 2px rgba(0, 0, 0, 0.04); border-radius: 20px;'>
-  <textarea dir=\"auto\" autocomplete='off' class='comment_field' id='inputComm_$get_post_id' type=\"text\" data-cid='$get_post_id' data-path='$check_path' name=\"$get_post_id\" placeholder='".lang('comment_field_ph')."' style='text-align:".lang('comment_field_align').";' ></textarea>
+  <textarea dir=\"auto\" autocomplete='off' class='comment_field' id='inputComm_$get_post_id' type=\"text\" data-cid='$get_post_id' data-path='".$config['WebSiteRootURL']."' name=\"$get_post_id\" placeholder='".lang('comment_field_ph')."' style='text-align:".lang('comment_field_align').";' ></textarea>
   <span class='emoticonsBtn fa fa-smile-o' onclick=\"cEmojiBtn('$get_post_id')\" id='#embtn_".$get_post_id."'></span>
       <div id='em_$get_post_id' data-emtog='0' style='".lang('float2').":0;' class='emoticonsBox'></div>
 </div>

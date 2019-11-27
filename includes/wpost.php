@@ -115,12 +115,12 @@ $insert_post_toDB->bindParam(':p_title', $p_title,PDO::PARAM_STR);
 $insert_post_toDB->bindParam(':p_privacy', $p_privacy,PDO::PARAM_STR);
 $insert_post_toDB->execute();
 }
-include($config['SystemRootPath'] . "fetch_users_info.php");
-include ($config['SystemRootPath'] . "time_function.php");
-include ($config['SystemRootPath'] . "num_k_m_count.php");
+include($config['SystemRootPath'] . "includes/fetch_users_info.php");
+include ($config['SystemRootPath'] . "includes/time_function.php");
+include ($config['SystemRootPath'] . "includes/num_k_m_count.php");
 $vpsql = "SELECT * FROM posts WHERE post_id = :post_id";
 $view_posts = $con->prepare($vpsql);
 $view_posts->bindParam(':post_id', $post_id, PDO::PARAM_INT);
 $view_posts->execute();
-include $config['SystemRootPath'] . "fetch_posts.php";
+include $config['SystemRootPath'] . "includes/fetch_posts.php";
 ?>

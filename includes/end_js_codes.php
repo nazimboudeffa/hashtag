@@ -35,7 +35,7 @@ document.getElementById('GetLimitOfPosts').value = 0;
 function followUnfollow(id){
     $.ajax({
         type:'POST',
-        url:"<?php echo $checkDir; ?>includes/f_action.php",
+        url:"<?php echo $config['WebSiteRootURL']; ?>includes/f_action.php",
         data:{'id':id},
         beforeSend:function(){
             $('#followUnfollow_'+id).html("<button class=\"unfollow_btn\"><span class=\"fa fa-check\"></span> <?php echo lang('followingBtn_str'); ?></button>");
@@ -51,7 +51,7 @@ function followUnfollow(id){
 function likeUnlike(pl){
     $.ajax({
     type:'POST',
-    url:"<?php echo $checkDir; ?>includes/lac.php",
+    url:"<?php echo $config['WebSiteRootURL']; ?>includes/lac.php",
     data:{'pl':pl},
     dataType: "json",
         beforeSend:function(){
@@ -96,13 +96,13 @@ $('#commEditBox_'+cid).focus();
 }
 function editComment_save(cid,checkPath){
 var cContent = $.trim($('#commEditBox_'+cid).val());
-var path = "<?php echo $checkDir; ?>";
+var path = "<?php echo $config['WebSiteRootURL']; ?>";
 if (cContent == '') {
 
 }else{
 $.ajax({
 type: "POST",
-url: "<?php echo $checkDir; ?>includes/updatecomment.php",
+url: "<?php echo $config['WebSiteRootURL']; ?>includes/updatecomment.php",
 data: { "cid":cid,"cContent":cContent,"cp":checkPath },
 cache: false,
 dataType: "json",
@@ -140,10 +140,10 @@ function editPost_save(pid,checkPath){
 var pc = $.trim($('#EditBox_'+pid).val());
 var pt = $.trim($('#EditTitleBox_'+pid).val());
 var pp = $.trim($('#p_privacy_'+pid).val());
-var path = "<?php echo $checkDir; ?>";
+var path = "<?php echo $config['WebSiteRootURL']; ?>";
 $.ajax({
 type: "POST",
-url: "<?php echo $checkDir; ?>includes/updatepost.php",
+url: "<?php echo $config['WebSiteRootURL']; ?>includes/updatepost.php",
 data: {"pid":pid, "pc":pc, "pt":pt, "pp":pp, "cp":checkPath},
 cache: false,
 dataType: "json",
@@ -177,7 +177,7 @@ $('#postEditBox_'+pid).hide();
 function deletePost(pid){
 $.ajax({
     type:'POST',
-    url:'<?php echo $checkDir; ?>includes/deletepost.php',
+    url:'<?php echo $config['WebSiteRootURL']; ?>includes/deletepost.php',
     data:{'pid':pid},
     beforeSend: function(){
     $('#'+pid).hide();
@@ -194,12 +194,12 @@ $.ajax({
 }
 function commentodb(pid,checkPath){
 var cContent = $.trim($('#inputComm_'+pid).val());
-var path = "<?php echo $checkDir; ?>";
+var path = "<?php echo $config['WebSiteRootURL']; ?>";
 if(cContent == ''){
 }else{
 $.ajax({
     type:'POST',
-    url:'<?php echo $checkDir; ?>includes/insert_commentdb.php',
+    url:'<?php echo $config['WebSiteRootURL']; ?>includes/insert_commentdb.php',
     data:{"pid":pid, "cContent":cContent, "cp":checkPath},
     cache: false,
     beforeSend: function(loading){
@@ -218,7 +218,7 @@ $.ajax({
 function deleteComment(cid){
 $.ajax({
     type:'POST',
-    url:'<?php echo $checkDir; ?>includes/deletecomm.php',
+    url:'<?php echo $config['WebSiteRootURL']; ?>includes/deletecomm.php',
     data:{'cid':cid},
     beforeSend: function(){
         $('#comment_'+cid).hide();
@@ -372,11 +372,11 @@ if($('#emBox').attr('data-emtog') == '0'){
     $('#emBox').show();
     $('#emBox').attr('data-emtog','1');
     if(checkData.length == 0){
-        var path = "<?php echo $checkDir; ?>";
+        var path = "<?php echo $config['WebSiteRootURL']; ?>";
         var emType = "message";
         $.ajax({
         type:"POST",
-        url: "<?php echo $checkDir; ?>includes/emoticons_c_m.php",
+        url: "<?php echo $config['WebSiteRootURL']; ?>includes/emoticons_c_m.php",
         data:{'path':path,'emType':emType},
         beforeSend:function(){
         $('#emBox').show();
@@ -428,7 +428,7 @@ $.ajax({
 function reportpost(type,fid){
 $.ajax({
     type:'POST',
-    url:"<?php echo $checkDir; ?>includes/report.php",
+    url:"<?php echo $config['WebSiteRootURL']; ?>includes/report.php",
     data:{'type':type,'fid':fid},
     beforeSend:function(){
     $('#postNotify_'+fid).slideDown(300,function(){
@@ -451,15 +451,15 @@ function submitreport(){
 if (sub != "" && txt != "") {
 $.ajax({
 type:'POST',
-url:"<?php echo $checkDir; ?>includes/report.php",
+url:"<?php echo $config['WebSiteRootURL']; ?>includes/report.php",
 data:{'type':type,'sub':sub,'txt':txt},
 beforeSend:function(){
 $('#report_submit').hide();
-$('#SubLog').html("<p><img src='<?php echo $checkDir; ?>imgs/loading_video.gif' style='width:20px;box-shadow: none;height: 20px;'> Sending your report...</p>");
+$('#SubLog').html("<p><img src='<?php echo $config['WebSiteRootURL']; ?>imgs/loading_video.gif' style='width:20px;box-shadow: none;height: 20px;'> Sending your report...</p>");
 },
 success:function(data){
 if (data == "done") {
-    window.location.href = "<?php echo $checkDir; ?>page/supportbox";
+    window.location.href = "<?php echo $config['WebSiteRootURL']; ?>page/supportbox";
 }else{
     $('#report_submit').show();
     $('#SubLog').html("<p style='color:red;'>"+data+"</p>");
@@ -474,10 +474,10 @@ function deleteReport(rid){
     var type = "deleteReport";
 $.ajax({
     type:'POST',
-    url:"<?php echo $checkDir; ?>includes/report.php",
+    url:"<?php echo $config['WebSiteRootURL']; ?>includes/report.php",
     data:{'type':type,'rid':rid},
     beforeSend:function(){
-    $('#delR_'+rid).html("<p style='margin:0;'><img src='<?php echo $checkDir; ?>imgs/loading_video.gif' style='width:20px;box-shadow: none;height: 20px;'></p>");
+    $('#delR_'+rid).html("<p style='margin:0;'><img src='<?php echo $config['WebSiteRootURL']; ?>imgs/loading_video.gif' style='width:20px;box-shadow: none;height: 20px;'></p>");
     },
     success:function(data){
     if (data == "done") {
@@ -493,10 +493,10 @@ $.ajax({
 function mLoadUsers(){
 mLoadUsers2();
 var requ = "getUsers";
-var path = "<?php echo $checkDir; ?>";
+var path = "<?php echo $config['WebSiteRootURL']; ?>";
 $.ajax({
     type:'POST',
-    url:"<?php echo $checkDir; ?>includes/m_requests.php",
+    url:"<?php echo $config['WebSiteRootURL']; ?>includes/m_requests.php",
     data:{'req':requ,'path':path},
     success:function(data){
      if (data =='') {
@@ -509,10 +509,10 @@ $.ajax({
 }
 function mLoadUsers2(){
 var requ = "getUsers2";
-var path = "<?php echo $checkDir; ?>";
+var path = "<?php echo $config['WebSiteRootURL']; ?>";
 $.ajax({
     type:'POST',
-    url:"<?php echo $checkDir; ?>includes/m_requests.php",
+    url:"<?php echo $config['WebSiteRootURL']; ?>includes/m_requests.php",
     data:{'req':requ,'path':path},
     success:function(data){
      if (data =='') {
@@ -525,14 +525,14 @@ $.ajax({
 }
 function mSearchUser(){
 var requ = "searchUser";
-var path = "<?php echo $checkDir; ?>";
+var path = "<?php echo $config['WebSiteRootURL']; ?>";
 var mSearch = $.trim($('#mU_search').val());
 if (mSearch != '') {
 $('#m_contacts').hide();
 $('#m_contacts_search').show();
 $.ajax({
     type:'POST',
-    url:"<?php echo $checkDir; ?>includes/m_requests.php",
+    url:"<?php echo $config['WebSiteRootURL']; ?>includes/m_requests.php",
     data:{'req':requ,'path':path,'mSearch':mSearch},
     beforeSend:function(){
         $('#m_contacts_search').html("<div style='text-align: center; padding: 15px;'><img src='"+path+"imgs/loading_video.gif'></div>");
@@ -550,10 +550,10 @@ $.ajax({
 
 function mUserProfile(uid,type){
 var requ = "userProfile";
-var path = "<?php echo $checkDir; ?>";
+var path = "<?php echo $config['WebSiteRootURL']; ?>";
 $.ajax({
     type:'POST',
-    url:"<?php echo $checkDir; ?>includes/m_requests.php",
+    url:"<?php echo $config['WebSiteRootURL']; ?>includes/m_requests.php",
     data:{'req':requ,'path':path,'uid':uid},
     dataType: "json",
     beforeSend:function(){
@@ -582,11 +582,11 @@ $.ajax({
 }
 function mFetchMsgs(uid,type){
 var requ = "fetchMsgs";
-var path = "<?php echo $checkDir; ?>";
+var path = "<?php echo $config['WebSiteRootURL']; ?>";
 var mCountToScroll = $('.m_msgTable').attr('data-count');
 $.ajax({
     type:'POST',
-    url:"<?php echo $checkDir; ?>includes/m_requests.php",
+    url:"<?php echo $config['WebSiteRootURL']; ?>includes/m_requests.php",
     data:{'req':requ,'path':path,'uid':uid},
     beforeSend:function(){
     if (type == "click") {
@@ -607,10 +607,10 @@ $.ajax({
 }
 function mCheckSeen(uid){
 var requ = "checkSeen";
-var path = "<?php echo $checkDir; ?>";
+var path = "<?php echo $config['WebSiteRootURL']; ?>";
 $.ajax({
     type:'POST',
-    url:"<?php echo $checkDir; ?>includes/m_requests.php",
+    url:"<?php echo $config['WebSiteRootURL']; ?>includes/m_requests.php",
     data:{'req':requ,'path':path,'uid':uid},
     success:function(data){
     if (data > 0) {
@@ -624,12 +624,12 @@ $.ajax({
 }
 function mSendField(uid){
 var requ = "sendMsg";
-var path = "<?php echo $checkDir; ?>";
+var path = "<?php echo $config['WebSiteRootURL']; ?>";
 var msg = $.trim($('#mSendField').val());
 if (msg != '' && uid != 0) {
 $.ajax({
     type:'POST',
-    url:"<?php echo $checkDir; ?>includes/m_requests.php",
+    url:"<?php echo $config['WebSiteRootURL']; ?>includes/m_requests.php",
     data:{'req':requ,'path':path,'uid':uid,'msg':msg},
     success:function(data){
     if (data == "error") {
@@ -647,10 +647,10 @@ $.ajax({
 // typing [ststus] message from user
 function mTypingStatus(uid){
 var requ = "checkTyping";
-var path = "<?php echo $checkDir; ?>";
+var path = "<?php echo $config['WebSiteRootURL']; ?>";
 $.ajax({
     type:'POST',
-    url:"<?php echo $checkDir; ?>includes/m_requests.php",
+    url:"<?php echo $config['WebSiteRootURL']; ?>includes/m_requests.php",
     data:{'req':requ,'path':path,'uid':uid},
     success:function(data){
     if (data > 0) {
@@ -664,10 +664,10 @@ $.ajax({
 }
 function mSetTyping(uid){
 var requ = "mTyping";
-var path = "<?php echo $checkDir; ?>";
+var path = "<?php echo $config['WebSiteRootURL']; ?>";
 $.ajax({
     type:'POST',
-    url:"<?php echo $checkDir; ?>includes/m_requests.php",
+    url:"<?php echo $config['WebSiteRootURL']; ?>includes/m_requests.php",
     data:{'req':requ,'path':path,'uid':uid},
     success:function(data){
     }
@@ -675,10 +675,10 @@ $.ajax({
 }
 function mRemoveTyping(uid){
 var requ = "mUnTyping";
-var path = "<?php echo $checkDir; ?>";
+var path = "<?php echo $config['WebSiteRootURL']; ?>";
 $.ajax({
     type:'POST',
-    url:"<?php echo $checkDir; ?>includes/m_requests.php",
+    url:"<?php echo $config['WebSiteRootURL']; ?>includes/m_requests.php",
     data:{'req':requ,'path':path,'uid':uid},
     success:function(data){
     }
