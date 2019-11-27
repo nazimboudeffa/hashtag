@@ -16,7 +16,9 @@ catch(PDOException $e)
 // ========================= config the languages ================================
 error_reporting(E_NOTICE ^ E_ALL);
 
-
+if (!isset($config['SystemRootPath'])) {
+    include "../config/config.php";
+}
 include $config['SystemRootPath']."langs/set_lang.php";
 
 // ================================ user verified badge style
