@@ -34,7 +34,6 @@ include_once $path."langs/set_lang.php";
     <!--============[ Nav bar ]============-->
         <div class="login_signup_navbar">
                 <a href="index" class="login_signup_navbarLinks">Hashtag</a>
-                <a href="#" class="btn btn-primary">Blog</a>
         </div>
         <!--============[ main contains ]============-->
         <div class="login_signup_box">
