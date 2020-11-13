@@ -69,7 +69,7 @@ function fetchUserPosts_DB(){
     },
 
     success:function(data){
-console.log(data);
+
       if (data == "0") {
 
         $('#LoadMorePostsBtn').hide();
