@@ -55,7 +55,7 @@ if (isset($usrSessID)) {
     <img src="<?php echo 'imgs/user_imgs/'.$_SESSION['Userphoto']; ?>">
   </a>
   </div>
-  <div align="center"><a href="u/<?php echo $_SESSION['Username']; ?>" style="text-decoration: underline blue;">@<?php echo $_SESSION['Username'];?></a> <span style="margin:5px;font-size:18px;">(<?php echo "<a href='u/".$_SESSION['Username']."'>".$_SESSION['Fullname']."</a>"; if ($_SESSION['verify'] == "1"){echo $verifyUser;} ?>)</span></div>
+  <div align="center"><span style="margin:5px;font-size:18px;"><?php echo "<a href='u/".$_SESSION['Username']."'>".$_SESSION['Fullname']."</a>"; if ($_SESSION['verify'] == "1"){echo $verifyUser;} ?></span></div>
 
 </div>
 
