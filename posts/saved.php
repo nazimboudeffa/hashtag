@@ -1,7 +1,7 @@
 <?php
 error_reporting(E_ALL ^ E_NOTICE);
 session_start();
-if (!isset($config['SystemRootPath'])) {
+if (!isset($global['systemRootPath'])) {
     require_once '../config/config.php';
 };
 include("../config/connect.php");
@@ -11,7 +11,7 @@ include ("../includes/num_k_m_count.php");
 if(!isset($_SESSION['Username'])){
     header("location: ../index");
 }
-include($config['SystemRootPath'] . "langs/set_lang.php");
+include($global['systemRootPath'] . "langs/set_lang.php");
 ?>
 <html dir="<?php echo lang('html_dir'); ?>">
 <head>
@@ -25,7 +25,7 @@ include($config['SystemRootPath'] . "langs/set_lang.php");
 </head>
 <body>
 <!--=============================[ NavBar ]========================================-->
-<?php include $config['SystemRootPath'] . "includes/navbar_main.php"; ?>
+<?php include $global['systemRootPath'] . "includes/navbar_main.php"; ?>
 <div class="main_container" align="center">
     <div style="display: inline-flex" align="center">
         <div align="left">
@@ -34,7 +34,7 @@ include($config['SystemRootPath'] . "langs/set_lang.php");
                 <td><?php echo lang('all_posts_that_you_saved'); ?></td>
                 <td align="center"><span class="fa fa-cog"></span></td>
             </tr>
-            <?php include $config['SystemRootPath'] . "includes/fetch_posts_saved.php"; ?>
+            <?php include $global['systemRootPath'] . "includes/fetch_posts_saved.php"; ?>
         </table>
         <?php
         if ($countSaved < 1) {
@@ -50,6 +50,6 @@ include($config['SystemRootPath'] . "langs/set_lang.php");
         </div>
     </div>
 </div>
-<?php include "../includes/end_js_codes.php"; ?>
+<?php include "../includes/endJScodes.php"; ?>
 </body>
 </html>

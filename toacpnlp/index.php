@@ -1,16 +1,30 @@
 <?php
 error_reporting(E_ALL ^ E_NOTICE);
 session_start();
-if (!isset($config['SystemRootPath'])) {
-    include "../config/config.php";
-}
-include($config['SystemRootPath'] . "config/connect.php");
-include ($config['SystemRootPath'] . "includes/num_k_m_count.php");
-include ($config['SystemRootPath'] . "includes/time_function.php");
-
+if (!isset($global['systemRootPath'])) {
+    require_once '../config/config.php';
+};
+include("../config/connect.php");
+include ("../includes/num_k_m_count.php");
+include ("../includes/time_function.php");
+include($global['systemRootPath'] . "langs/set_lang.php");
 // if user not logged in go index page or login
 if(!isset($_SESSION['Username'])){
     header("location: ../index");
+}
+
+// ================================ user verified badge style
+$verifyUser = "<span style='color: #03A9F4;' data-toggle='tooltip' data-placement='top' title='".lang('verified_page')."' class='fa fa-check-circle verifyUser'></span>";
+// ================================ check user if exist or not (for removed account).
+$usrSessID = $_SESSION['id'];
+$usrRemovedAcc = $conn->prepare("SELECT id FROM signup WHERE id=:usrSessID");
+$usrRemovedAcc->bindParam(':usrSessID',$usrSessID,PDO::PARAM_INT);
+$usrRemovedAcc->execute();
+$$usrRemovedAccCount = $usrRemovedAcc->rowCount();
+if (isset($usrSessID)) {
+	if($$usrRemovedAccCount < 1){
+		session_destroy();
+	}
 }
 
 // check if user is an admin or naot to access dashboard
@@ -20,76 +34,80 @@ if ($_SESSION['admin'] != '1') {
     }
 }
 
+// set check path var
+if (is_dir("imgs/")) {
+    $dircheckPath = "";
+}elseif (is_dir("../imgs/")) {
+    $dircheckPath = "../";
+}elseif (is_dir("../../imgs/")) {
+    $dircheckPath = "../../";
+}
+
 //get request 'urlP'
 $urlP = filter_var(htmlspecialchars($_GET['adb']),FILTER_SANITIZE_STRING);
 // ============= [ General Data ] ==============
-$cusers_q_sql = "SELECT id FROM users";
-$cusers_q = $con->prepare($cusers_q_sql);
+$cusers_q_sql = "SELECT id FROM signup";
+$cusers_q = $conn->prepare($cusers_q_sql);
 $cusers_q->execute();
 $cusers_q_num_rows = $cusers_q->rowCount();
 
-$cposts_q_sql = "SELECT post_id FROM posts";
-$cposts_q = $con->prepare($cposts_q_sql);
+$cposts_q_sql = "SELECT post_id FROM wpost";
+$cposts_q = $conn->prepare($cposts_q_sql);
 $cposts_q->execute();
 $cposts_q_num_rows = $cposts_q->rowCount();
 
 $ccomments_q_sql = "SELECT c_id FROM comments";
-$ccomments_q = $con->prepare($ccomments_q_sql);
+$ccomments_q = $conn->prepare($ccomments_q_sql);
 $ccomments_q->execute();
 $ccomments_q_num_rows = $ccomments_q->rowCount();
 
-$verify_q_sql = "SELECT verify FROM users WHERE verify='1'";
-$verify_q = $con->prepare($verify_q_sql);
+$verify_q_sql = "SELECT verify FROM signup WHERE verify='1'";
+$verify_q = $conn->prepare($verify_q_sql);
 $verify_q->execute();
 $verify_q_num_rows = $verify_q->rowCount();
 
-$admins_q_sql = "SELECT admin FROM users WHERE admin='1' OR admin='2'";
-$admins_q = $con->prepare($admins_q_sql);
+$admins_q_sql = "SELECT admin FROM signup WHERE admin='1' OR admin='2'";
+$admins_q = $conn->prepare($admins_q_sql);
 $admins_q->execute();
 $admins_q_num_rows = $admins_q->rowCount();
 
 $likes_q_sql = "SELECT id FROM likes";
-$likes_q = $con->prepare($likes_q_sql);
+$likes_q = $conn->prepare($likes_q_sql);
 $likes_q->execute();
 $likes_q_num_rows = $likes_q->rowCount();
 
-$aSetup_q_sql = "SELECT aSetup FROM users WHERE aSetup='100'";
-$aSetup = $con->prepare($aSetup_q_sql);
+$aSetup_q_sql = "SELECT aSetup FROM signup WHERE aSetup='100'";
+$aSetup = $conn->prepare($aSetup_q_sql);
 $aSetup->execute();
 $aSetup_num_rows = $aSetup->rowCount();
 
-$genderM_q_sql = "SELECT gender FROM users WHERE gender='Male'";
-$genderM = $con->prepare($genderM_q_sql);
+$genderM_q_sql = "SELECT gender FROM signup WHERE gender='Male'";
+$genderM = $conn->prepare($genderM_q_sql);
 $genderM->execute();
 $genderM_num_rows = $genderM->rowCount();
 
-$genderF_sql = "SELECT gender FROM users WHERE gender='Female'";
-$genderF = $con->prepare($genderF_sql);
+$genderF_sql = "SELECT gender FROM signup WHERE gender='Female'";
+$genderF = $conn->prepare($genderF_sql);
 $genderF->execute();
 $genderF_num_rows = $genderF->rowCount();
 
 $stars_q_sql = "SELECT id FROM r_star";
-$stars_q = $con->prepare($stars_q_sql);
+$stars_q = $conn->prepare($stars_q_sql);
 $stars_q->execute();
 $stars_q_num_rows = $stars_q->rowCount();
-/*
-$notes_sql = "SELECT id FROM mynotepad";
-$notes_q = $con->prepare($notes_sql);
-$notes_q->execute();
-$notes_q_num_rows = $notes_q->rowCount();
-*/
+
 $msgs_sql = "SELECT id FROM messages";
-$msgs_sql = $con->prepare($msgs_sql);
+$msgs_sql = $conn->prepare($msgs_sql);
 $msgs_sql->execute();
 $msgs_sql_count = $msgs_sql->rowCount();
 
 $saved_sql = "SELECT id FROM saved";
-$saved_q = $con->prepare($saved_sql);
+$saved_q = $conn->prepare($saved_sql);
 $saved_q->execute();
 $saved_q_num_rows = $saved_q->rowCount();
 
 $notifications_sql = "SELECT id FROM notifications";
-$notifications_q = $con->prepare($notifications_sql);
+$notifications_q = $conn->prepare($notifications_sql);
 $notifications_q->execute();
 $notifications_q_num_rows = $notifications_q->rowCount();
 
@@ -103,15 +121,14 @@ $aSetup = thousandsCurrencyFormat($aSetup_num_rows);
 $genderM = thousandsCurrencyFormat($genderM_num_rows);
 $genderF = thousandsCurrencyFormat($genderF_num_rows);
 $stars = thousandsCurrencyFormat($stars_q_num_rows);
-$notes = thousandsCurrencyFormat($notes_q_num_rows);
 $msgs = thousandsCurrencyFormat($msgs_sql_count);
 $saved = thousandsCurrencyFormat($saved_q_num_rows);
 $notifications = thousandsCurrencyFormat($notifications_q_num_rows);
 // ============= [ Verify badge ] ==============
 if (isset($_POST['verifyBadgeBtn'])) {
     $userVerifyBadge = htmlspecialchars(htmlentities($_POST['verifyBadge']));
-    $verifyUserE_sql = "SELECT Username FROM users WHERE Username=:userVerifyBadge";
-    $verifyUserE = $con->prepare($verifyUserE_sql);
+    $verifyUserE_sql = "SELECT Username FROM signup WHERE Username=:userVerifyBadge";
+    $verifyUserE = $conn->prepare($verifyUserE_sql);
     $verifyUserE->bindParam(':userVerifyBadge',$userVerifyBadge,PDO::PARAM_STR);
     $verifyUserE->execute();
     $verifyUserE_count = $verifyUserE->rowCount();
@@ -119,26 +136,26 @@ if (isset($_POST['verifyBadgeBtn'])) {
     switch (filter_var(htmlentities($_POST['verifyOptions']),FILTER_SANITIZE_STRING)) {
         case lang('verify_user'):
         $verifyValue = "1";
-        $insertVerify_sql = "UPDATE users SET verify=:verifyValue WHERE Username =:userVerifyBadge";
-        $insertVerify = $con->prepare($insertVerify_sql);
+        $insertVerify_sql = "UPDATE signup SET verify=:verifyValue WHERE Username =:userVerifyBadge";
+        $insertVerify = $conn->prepare($insertVerify_sql);
         $insertVerify->bindParam(':verifyValue',$verifyValue,PDO::PARAM_INT);
         $insertVerify->bindParam(':userVerifyBadge',$userVerifyBadge,PDO::PARAM_STR);
         $insertVerify->execute();
         if ($insertVerify) {
-            $verifyBadgeResult = "<p style='color:#4CAF50;'><a href='".$config['WebSiteRootURL']."u/".$userVerifyBadge."'> $userVerifyBadge</a> ".lang('verified_successfully')."</p>";
+            $verifyBadgeResult = "<p style='color:#4CAF50;'><a href='".$dircheckPath."u/".$userVerifyBadge."'> $userVerifyBadge</a> ".lang('verified_successfully')."</p>";
         }else{
             $verifyBadgeResult = "<p style='color:#F44336;'> ".lang('errorSomthingWrong')."</p>";
         }
         break;
         case lang('remove_verifyBadge'):
         $verifyValue = "0";
-        $insertVerify_sql = "UPDATE users SET verify=:verifyValue WHERE Username =:userVerifyBadge";
-        $insertVerify = $con->prepare($insertVerify_sql);
+        $insertVerify_sql = "UPDATE signup SET verify=:verifyValue WHERE Username =:userVerifyBadge";
+        $insertVerify = $conn->prepare($insertVerify_sql);
         $insertVerify->bindParam(':verifyValue',$verifyValue,PDO::PARAM_INT);
         $insertVerify->bindParam(':userVerifyBadge',$userVerifyBadge,PDO::PARAM_STR);
         $insertVerify->execute();
         if ($insertVerify) {
-            $verifyBadgeResult = "<p style='color:#4CAF50;'>".lang('verify_badge_removed_succ_from')." <a href='".$config['WebSiteRootURL']."u/".$userVerifyBadge."'> $userVerifyBadge</a></p>";
+            $verifyBadgeResult = "<p style='color:#4CAF50;'>".lang('verify_badge_removed_succ_from')." <a href='".$dircheckPath."u/".$userVerifyBadge."'> $userVerifyBadge</a></p>";
         }else{
             $verifyBadgeResult = "<p style='color:#F44336;'> ".lang('errorSomthingWrong')."</p>";
         }
@@ -286,18 +303,18 @@ if (isset($_POST['verifyBadgeBtn'])) {
     <p class="dashboard_path"><a href="?adb=General"><? echo lang('dashboard'); ?></a> / <? echo lang('users'); ?></p>
     <br/>
     <?php
-    $fetchUsers_sql = "SELECT Username,Fullname,Userphoto FROM users";
-    $fetchUsers = $con->prepare($fetchUsers_sql);
+    $fetchUsers_sql = "SELECT Username,Fullname,Userphoto FROM signup";
+    $fetchUsers = $conn->prepare($fetchUsers_sql);
     $fetchUsers->execute();
     while ($rows = $fetchUsers->fetch(PDO::FETCH_ASSOC)) {
     ?>
     <table class="dashboard_UsersTable">
         <tr>
         <td style="width: 40px;">
-            <div><img src="<?php echo $config['WebSiteRootURL']; ?>imgs/user_imgs/<?php echo $rows['Userphoto']; ?>"></div>
+            <div><img src="<?php echo $dircheckPath; ?>imgs/user_imgs/<?php echo $rows['Userphoto']; ?>"></div>
         </td>
         <td>
-            <a href="<?php echo $config['WebSiteRootURL']; ?>u/<?php echo $rows['Username']; ?>"><p><?php echo $rows['Fullname']; ?></p></a>
+            <a href="<?php echo $dircheckPath; ?>u/<?php echo $rows['Username']; ?>"><p><?php echo $rows['Fullname']; ?></p></a>
         </td>
         <td align="center" style="width: 150px;"><a href="user?ed=<?php echo $rows['Username']; ?>" class="dashboard_EditDelete"><? echo lang('edit_delete_dashboard'); ?></a></td>
         </tr>
@@ -317,7 +334,7 @@ if (isset($_POST['verifyBadgeBtn'])) {
         <?php
         $n=0;
         $status = "0";
-        $fetchsubjects = $con->prepare("SELECT r_id,from_id,r_type,subject,r_time FROM supportbox WHERE status = :status");
+        $fetchsubjects = $conn->prepare("SELECT r_id,from_id,r_type,subject,r_time FROM supportbox WHERE status = :status");
         $fetchsubjects->bindParam(':status',$status,PDO::PARAM_INT);
         $fetchsubjects->execute();
         $rCount = $fetchsubjects->rowCount();
@@ -337,7 +354,7 @@ if (isset($_POST['verifyBadgeBtn'])) {
             break;
 
         }
-        $fetchFrom = $con->prepare("SELECT Fullname,Username FROM users WHERE id = :from_id");
+        $fetchFrom = $conn->prepare("SELECT Fullname,Username FROM signup WHERE id = :from_id");
         $fetchFrom->bindParam(':from_id',$from_id,PDO::PARAM_INT);
         $fetchFrom->execute();
         while ($from_Rows = $fetchFrom->fetch(PDO::FETCH_ASSOC)) {
@@ -348,7 +365,7 @@ if (isset($_POST['verifyBadgeBtn'])) {
         <tr>
             <td><? echo $n+=1; ?></td>
             <td><a href="sbox_r?rid=<? echo $replay_id; ?>"><? echo $subject; ?></a></td>
-            <td><a href="<? echo $config['WebSiteRootURL'].'u/'.$fromid_un; ?>"><? echo $fromid_name; ?></a></td>
+            <td><a href="<? echo $dircheckPath.'u/'.$fromid_un; ?>"><? echo $fromid_name; ?></a></td>
             <td><? echo time_ago($r_time); ?></td>
         </tr>
         <?php } }else{echo lang('nothingToShow');} ?>
@@ -359,6 +376,6 @@ if (isset($_POST['verifyBadgeBtn'])) {
     </div>
 </div>
 </div>
-<?php include "../includes/end_js_codes.php"; ?>
+<?php include "../includes/endJScodes.php"; ?>
 </body>
 </html>

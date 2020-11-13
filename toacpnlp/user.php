@@ -1,14 +1,16 @@
 <?php
 error_reporting(E_ALL ^ E_NOTICE);
 session_start();
-include("../config/connect.php");
 include ("../includes/num_k_m_count.php");
-
+if (!isset($global['systemRootPath'])) {
+    require_once '../config/config.php';
+};
 // if user not logged in go index page or login
 if(!isset($_SESSION['Username'])){
     header("location: ../index");
 }
-
+include($global['systemRootPath'] . "config/connect.php");
+include($global['systemRootPath'] . "langs/set_lang.php");
 // check if user is an admin or naot to access dashboard
 if ($_SESSION['admin'] != '1') {
     if ($_SESSION['admin'] != '2') {
@@ -48,7 +50,7 @@ switch ($db_admin) {
         $db_admin = "0";
         break;
 }
-// get information of username and put it into fields as default 
+// get information of username and put it into fields as default
 $uInfo = $conn->prepare("SELECT id,Fullname,Username,Email,Password,admin FROM signup WHERE Username = :ed");
 $uInfo->bindParam(':ed',$ed,PDO::PARAM_STR);
 $uInfo->execute();
@@ -119,7 +121,7 @@ if (isset($_POST['submit_uInfo'])) {
         $update->bindParam(':db_username',$db_username,PDO::PARAM_STR);
         $update->bindParam(':db_email',$db_email,PDO::PARAM_STR);
         if (!empty($db_password_var)) {
-        $update->bindParam(':db_password',$db_password,PDO::PARAM_STR);            
+        $update->bindParam(':db_password',$db_password,PDO::PARAM_STR);
         }
         $update->bindParam(':db_admin',$db_admin,PDO::PARAM_INT);
         $update->bindParam(':ed',$ed,PDO::PARAM_STR);
@@ -295,7 +297,7 @@ if (isset($_POST['rAccBtn'])) {
             echo "<p class='alertRed'>".lang('uCannot_access_admin_data')."</p>";
         }
     }
-    
+
     }else{
         echo "<p class='alertRed'>".lang('username_not_exists')."</p>";
     } ?>

@@ -1,31 +1,44 @@
 <?php
 error_reporting(E_ALL ^ E_NOTICE);
 session_start();
-if (!isset($config['SystemRootPath'])) {
-    include "../config/config.php";
-}
-include($config['SystemRootPath'] . "config/connect.php");
-include($config['SystemRootPath'] . "includes/fetch_users_info.php");
-include ($config['SystemRootPath'] . "includes/time_function.php");
+if (!isset($global['systemRootPath'])) {
+    require_once '../config/config.php';
+};
+include("../config/connect.php");
+include("../includes/fetch_users_info.php");
+include ("../includes/time_function.php");
 if(!isset($_SESSION['Username'])){
     header("location: ../index");
 }
-
+include($global['systemRootPath'] . "langs/set_lang.php");
+// ================================ user verified badge style
+$verifyUser = "<span style='color: #03A9F4;' data-toggle='tooltip' data-placement='top' title='".lang('verified_page')."' class='fa fa-check-circle verifyUser'></span>";
+// ================================ check user if exist or not (for removed account).
+$usrSessID = $_SESSION['id'];
+$usrRemovedAcc = $conn->prepare("SELECT id FROM signup WHERE id=:usrSessID");
+$usrRemovedAcc->bindParam(':usrSessID',$usrSessID,PDO::PARAM_INT);
+$usrRemovedAcc->execute();
+$$usrRemovedAccCount = $usrRemovedAcc->rowCount();
+if (isset($usrSessID)) {
+	if($$usrRemovedAccCount < 1){
+		session_destroy();
+	}
+}
 $msgId = trim(filter_var(htmlentities($_GET['id'])),FILTER_SANITIZE_NUMBER_INT);
 ?>
 <html dir="<?php echo lang('html_dir'); ?>">
 <head>
-    <title><? echo lang('messages'); ?></title>
+    <title><? echo lang('messages'); ?> | Hashtag</title>
     <meta charset="UTF-8">
     <meta name="description" content="Hashtag is a social network platform helps you meet new friends and stay connected with your family and with who you are interested anytime anywhere.">
     <meta name="keywords" content="Notifications,social network,social media,Hashtag,meet,free platform">
     <meta name="author" content="Munaf Aqeel Mahdi">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <?php include $config['SystemRootPath'] . "includes/head_imports_main.php";?>
+    <?php include $global['systemRootPath'] . "includes/head_imports_main.php";?>
 </head>
 <body>
 <!--=============================[ NavBar ]========================================-->
-<?php include $config['SystemRootPath'] . "includes/navbar_main.php"; ?>
+<?php include $global['systemRootPath'] . "includes/navbar_main.php"; ?>
 <!--=============================[ Div_Container ]========================================-->
 <div class="messages_container" style="text-align: center;">
     <div style="text-align: <? echo lang('textAlign'); ?>">
@@ -37,12 +50,12 @@ $msgId = trim(filter_var(htmlentities($_GET['id'])),FILTER_SANITIZE_NUMBER_INT);
     		<div id="m_contacts" class="scrollbar" style="position: absolute; top: 0; right: 0; left: 0; bottom: 0; margin-top: 50px; overflow: auto;">
                 <p class="m_contacts_title"><? echo lang('requests'); ?></p>
                 <div id="m_contacts_requests">
-                    <div style="text-align: center; padding: 15px;"><img src="<? echo $config['WebSiteRootURL']; ?>imgs/loading_video.gif"></div>
+                    <div style="text-align: center; padding: 15px;"><img src="<? echo $global['webSiteRootURL']; ?>imgs/loading_video.gif"></div>
                 </div>
                 <br>
                 <p class="m_contacts_title" style="border-top: 1px solid #d0d4d8;"><? echo lang('friends'); ?></p>
                 <div id="m_contacts_friends">
-                    <div style="text-align: center; padding: 15px;"><img src="<? echo $config['WebSiteRootURL']; ?>imgs/loading_video.gif"></div>
+                    <div style="text-align: center; padding: 15px;"><img src="<? echo $global['webSiteRootURL']; ?>imgs/loading_video.gif"></div>
                 </div>
     		</div>
     		<div id="m_contacts_search" class="scrollbar" style="display:none;position: absolute; top: 0; right: 0; left: 0; bottom: 0; margin-top: 50px; overflow: auto;"></div>
@@ -58,8 +71,8 @@ $msgId = trim(filter_var(htmlentities($_GET['id'])),FILTER_SANITIZE_NUMBER_INT);
 				<? echo lang('selectToChat'); ?>
 			</p>
 			<div id="m_userSeen" style="display:none;padding: 0px 8px; color: #545454; font-size: 12px;text-align: right;"><span class="fa fa-check"></span> seen</div>
-			<div id="m_userTyping" class="m_msgU1" style="display:none;margin: 8px;margin-bottom: 15px;"><img src="<? echo $config['WebSiteRootURL']; ?>/imgs/typing.gif" style=" width: 30px; "></div>
-			<div id="m_messages_loading" style='display:none;text-align: center; padding: 15px;'><img src='<? echo $config['WebSiteRootURL']; ?>imgs/loading_video.gif'></div>
+			<div id="m_userTyping" class="m_msgU1" style="display:none;margin: 8px;margin-bottom: 15px;"><img src="<? echo $global['webSiteRootURL']; ?>/imgs/typing.gif" style=" width: 30px; "></div>
+			<div id="m_messages_loading" style='display:none;text-align: center; padding: 15px;'><img src='<? echo $global['webSiteRootURL']; ?>imgs/loading_video.gif'></div>
     		</div>
     		<div class="m_SendField_box">
     			<div class="m_SendField">
@@ -90,7 +103,7 @@ $msgId = trim(filter_var(htmlentities($_GET['id'])),FILTER_SANITIZE_NUMBER_INT);
     </div>
 </div>
 <!--===============================[ End ]==========================================-->
-<?php include $config['SystemRootPath'] . "includes/end_js_codes.php"; ?>
+<?php include $global['systemRootPath'] .  "includes/endJScodes.php"; ?>
 <script type="text/javascript">
 // on click on any user in contacts do this
 $('#m_contacts').on("click",".mC_userLink",function(){

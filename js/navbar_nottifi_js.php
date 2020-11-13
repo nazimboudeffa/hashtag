@@ -2,14 +2,14 @@
 // ============================================ search ============================================
 $(".navbar_search").keyup(function() {
 var sbar = $(this).val();
-var dircheckPath = "<?php echo $dircheckPath; ?>";
+var dircheckPath = "<?php echo $global['systemRootPath']; ?>";
 if(sbar == ''){
 $("#getSearchResult").hide();
 }
 else{
 $.ajax({
 type: "POST",
-url: "<?php echo $dircheckPath; ?>includes/searchq.php",
+url: "<?php echo $global['systemRootPath']; ?>includes/searchq.php",
 data: {'search_user':sbar,'dircheckPath':dircheckPath},
 cache: false,
 beforeSend:function(){
@@ -20,7 +20,7 @@ success: function(html){
 $('#LoadingSearchResult').hide();
 $("#getSearchResult").html(html).show();
 }});
-}return false; 
+}return false;
 });
 $("#searchq").click(function(e){
     $("#search_r").show();
@@ -31,12 +31,12 @@ $("#search_r").keyup(function(e){
 });
 // ============================================ notifications function ============================================
 function getNotifications(obj,reqToFetch){
-var path = "<?php echo $dircheckPath; ?>";
+var path = "<?php echo $global['webSiteRootURL']; ?>";
 var whatF = "fetch";
 var load = $('#'+obj+'_load').val();
 $.ajax({
 type: "POST",
-url: "<?php echo $dircheckPath; ?>includes/fetch_notifybox.php",
+url: "<?php echo $global['systemRootPath']; ?>includes/fetch_notifybox.php",
 data: {'what':whatF,'path':path,'load':load},
 cache: false,
 beforeSend:function(){
@@ -58,7 +58,7 @@ success: function(data){
         }
         $("#notifi_loadmoreBtn").show();
     }
-    
+
     $("#"+obj+"_loading").hide();
     document.getElementById(obj+"_load").value = Number(load)+10;
 }});
@@ -88,11 +88,11 @@ $("#notifications_rP").scroll(function(){
 });
 // ============================================ check notifications ============================================
 function chNoti(){
-var path = "<?php echo $dircheckPath; ?>";
+var path = "<?php echo $global['webSiteRootURL']; ?>";
 var whatCh = "check";
 $.ajax({
 type: "POST",
-url: "<?php echo $dircheckPath; ?>includes/fetch_notifybox.php",
+url: "<?php echo $global['systemRootPath']; ?>includes/fetch_notifybox.php",
 data: {'what':whatCh,'path':path},
 cache: false,
 success: function(data){
@@ -114,7 +114,7 @@ $('#nav_newNotify').html("");
 $('#nav_newNotify').attr('data-show',data);
 }
 }else{
-$("#notificationsCount").html('');  
+$("#notificationsCount").html('');
 $('#nav_newNotify').attr('data-show','0');
 }
 }});
@@ -123,10 +123,10 @@ chNoti();
 // ============================================ check new Messages ============================================
 function chNewMsgs(){
 var requ = "checkUnseenMsgs";
-var path = "<?php echo $dircheckPath; ?>";
+var path = "<?php echo $global['webSiteRootURL']; ?>";
 $.ajax({
     type:'POST',
-    url:"<?php echo $dircheckPath; ?>includes/m_requests.php",
+    url:"<?php echo $global['systemRootPath']; ?>includes/m_requests.php",
     data:{'req':requ,'path':path},
     success:function(data){
      $('#messagesCount').html(data);

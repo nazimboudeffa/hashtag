@@ -1,15 +1,15 @@
 <?php
 session_start();
-if (!isset($config['SystemRootPath'])) {
+if (!isset($global['systemRootPath'])) {
     require_once '../config/config.php';
 };
-include($config['SystemRootPath'] . "config/connect.php");
-include($config['SystemRootPath'] . "langs/set_lang.php");
+include($global['systemRootPath'] . "config/connect.php");
+include($global['systemRootPath'] . "langs/set_lang.php");
 
 include("../includes/fetch_users_info.php");
 $uid = $_SESSION['id'];
 $getSaved_sql = "SELECT * FROM saved WHERE user_saved_id= :uid ORDER BY saved_time DESC";
-$getSaved=$con->prepare($getSaved_sql);
+$getSaved=$conn->prepare($getSaved_sql);
 $getSaved->bindParam(':uid',$uid,PDO::PARAM_INT);
 $getSaved->execute();
 $countSaved = $getSaved->rowCount();
@@ -18,8 +18,8 @@ while ($fetchSaved = $getSaved->fetch(PDO::FETCH_ASSOC)) {
 	$saved_post_id = $fetchSaved['post_id'];
 	$saved_time = $fetchSaved['saved_time'];
 	$saved_timeAgo = time_ago($saved_time);
-	$getPost_id_sql = "SELECT * FROM posts WHERE post_id= :saved_post_id";
-	$getPost_id=$con->prepare($getPost_id_sql);
+	$getPost_id_sql = "SELECT * FROM wpost WHERE post_id= :saved_post_id";
+	$getPost_id=$conn->prepare($getPost_id_sql);
 	$getPost_id->bindParam(':saved_post_id',$saved_post_id,PDO::PARAM_INT);
 	$getPost_id->execute();
 	while ($fetchPost_id = $getPost_id->fetch(PDO::FETCH_ASSOC)) {
@@ -28,8 +28,8 @@ while ($fetchSaved = $getSaved->fetch(PDO::FETCH_ASSOC)) {
 	$post_img = $fetchPost_id['post_img'];
 	$post_content = $fetchPost_id['post_content'];
 	}
-	$getUserData_sql = "SELECT * FROM users WHERE id= :post_author_id";
-	$getUserData=$con->prepare($getUserData_sql);
+	$getUserData_sql = "SELECT * FROM signup WHERE id= :post_author_id";
+	$getUserData=$conn->prepare($getUserData_sql);
 	$getUserData->bindParam(':post_author_id',$post_author_id,PDO::PARAM_INT);
 	$getUserData->execute();
 	while ($fetchUserData = $getUserData->fetch(PDO::FETCH_ASSOC)) {

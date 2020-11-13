@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.9.1
+-- version 4.9.0.1
 -- https://www.phpmyadmin.net/
 --
--- Hôte : 127.0.0.1
--- Généré le :  mer. 27 nov. 2019 à 00:25
--- Version du serveur :  10.4.8-MariaDB
--- Version de PHP :  7.2.24
+-- Host: localhost
+-- Generation Time: Sep 14, 2019 at 03:42 PM
+-- Server version: 10.4.6-MariaDB
+-- PHP Version: 7.3.9
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -19,13 +19,13 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de données :  `hashtag`
+-- Database: `sn`
 --
 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `comments`
+-- Table structure for table `comments`
 --
 
 CREATE TABLE `comments` (
@@ -41,7 +41,7 @@ CREATE TABLE `comments` (
 -- --------------------------------------------------------
 
 --
--- Structure de la table `follow`
+-- Table structure for table `follow`
 --
 
 CREATE TABLE `follow` (
@@ -53,7 +53,7 @@ CREATE TABLE `follow` (
 -- --------------------------------------------------------
 
 --
--- Structure de la table `likes`
+-- Table structure for table `likes`
 --
 
 CREATE TABLE `likes` (
@@ -65,7 +65,7 @@ CREATE TABLE `likes` (
 -- --------------------------------------------------------
 
 --
--- Structure de la table `messages`
+-- Table structure for table `messages`
 --
 
 CREATE TABLE `messages` (
@@ -81,7 +81,7 @@ CREATE TABLE `messages` (
 -- --------------------------------------------------------
 
 --
--- Structure de la table `notifications`
+-- Table structure for table `notifications`
 --
 
 CREATE TABLE `notifications` (
@@ -98,25 +98,7 @@ CREATE TABLE `notifications` (
 -- --------------------------------------------------------
 
 --
--- Structure de la table `posts`
---
-
-CREATE TABLE `posts` (
-  `post_id` bigint(50) NOT NULL,
-  `author_id` bigint(11) NOT NULL,
-  `post_img` varchar(1000) CHARACTER SET utf8mb4 DEFAULT NULL,
-  `post_time` int(11) NOT NULL,
-  `post_content` mediumtext CHARACTER SET utf8mb4 NOT NULL,
-  `p_title` varchar(1000) CHARACTER SET utf8mb4 DEFAULT NULL,
-  `p_likes` int(100) NOT NULL DEFAULT 0,
-  `p_privacy` int(11) NOT NULL DEFAULT 0,
-  `shared` varchar(1000) CHARACTER SET utf8mb4 DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `r_star`
+-- Table structure for table `r_star`
 --
 
 CREATE TABLE `r_star` (
@@ -128,7 +110,7 @@ CREATE TABLE `r_star` (
 -- --------------------------------------------------------
 
 --
--- Structure de la table `saved`
+-- Table structure for table `saved`
 --
 
 CREATE TABLE `saved` (
@@ -142,42 +124,10 @@ CREATE TABLE `saved` (
 -- --------------------------------------------------------
 
 --
--- Structure de la table `supportbox`
+-- Table structure for table `signup`
 --
 
-CREATE TABLE `supportbox` (
-  `id` int(11) NOT NULL,
-  `r_id` bigint(11) NOT NULL,
-  `from_id` bigint(11) NOT NULL,
-  `for_id` bigint(11) NOT NULL,
-  `r_type` varchar(100) CHARACTER SET utf8mb4 NOT NULL,
-  `subject` varchar(1000) CHARACTER SET utf8mb4 NOT NULL,
-  `report` varchar(1000) CHARACTER SET utf8mb4 NOT NULL,
-  `r_time` int(11) NOT NULL,
-  `r_replay` varchar(1000) CHARACTER SET utf8mb4 DEFAULT NULL,
-  `r_replay_time` int(11) DEFAULT NULL,
-  `status` int(11) NOT NULL DEFAULT 0
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `typing_m`
---
-
-CREATE TABLE `typing_m` (
-  `id` bigint(11) NOT NULL,
-  `t_from` bigint(11) NOT NULL,
-  `t_to` bigint(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `users`
---
-
-CREATE TABLE `users` (
+CREATE TABLE `signup` (
   `main_id` int(11) NOT NULL,
   `id` bigint(50) NOT NULL,
   `Fullname` varchar(1000) CHARACTER SET utf8mb4 NOT NULL,
@@ -201,141 +151,191 @@ CREATE TABLE `users` (
   `language` varchar(100) CHARACTER SET utf8mb4 DEFAULT NULL,
   `aSetup` int(11) NOT NULL DEFAULT 0,
   `online` int(100) NOT NULL DEFAULT 0
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
 
 --
--- Index pour les tables déchargées
+-- Table structure for table `supportbox`
+--
+
+CREATE TABLE `supportbox` (
+  `id` int(11) NOT NULL,
+  `r_id` bigint(11) NOT NULL,
+  `from_id` bigint(11) NOT NULL,
+  `for_id` bigint(11) NOT NULL,
+  `r_type` varchar(100) CHARACTER SET utf8mb4 NOT NULL,
+  `subject` varchar(1000) CHARACTER SET utf8mb4 NOT NULL,
+  `report` varchar(1000) CHARACTER SET utf8mb4 NOT NULL,
+  `r_time` int(11) NOT NULL,
+  `r_replay` varchar(1000) CHARACTER SET utf8mb4 DEFAULT NULL,
+  `r_replay_time` int(11) DEFAULT NULL,
+  `status` int(11) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `typing_m`
+--
+
+CREATE TABLE `typing_m` (
+  `id` bigint(11) NOT NULL,
+  `t_from` bigint(11) NOT NULL,
+  `t_to` bigint(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `wpost`
+--
+
+CREATE TABLE `wpost` (
+  `post_id` bigint(50) NOT NULL,
+  `author_id` bigint(11) NOT NULL,
+  `post_img` varchar(1000) CHARACTER SET utf8mb4 DEFAULT NULL,
+  `post_time` int(11) NOT NULL,
+  `post_content` mediumtext CHARACTER SET utf8mb4 NOT NULL,
+  `p_title` varchar(1000) CHARACTER SET utf8mb4 DEFAULT NULL,
+  `p_likes` int(100) NOT NULL DEFAULT 0,
+  `p_privacy` int(11) NOT NULL DEFAULT 0,
+  `shared` varchar(1000) CHARACTER SET utf8mb4 DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Indexes for dumped tables
 --
 
 --
--- Index pour la table `comments`
+-- Indexes for table `comments`
 --
 ALTER TABLE `comments`
   ADD PRIMARY KEY (`c_id`);
 
 --
--- Index pour la table `follow`
+-- Indexes for table `follow`
 --
 ALTER TABLE `follow`
   ADD PRIMARY KEY (`id`);
 
 --
--- Index pour la table `likes`
+-- Indexes for table `likes`
 --
 ALTER TABLE `likes`
   ADD PRIMARY KEY (`id`);
 
 --
--- Index pour la table `messages`
+-- Indexes for table `messages`
 --
 ALTER TABLE `messages`
   ADD PRIMARY KEY (`id`);
 
 --
--- Index pour la table `notifications`
+-- Indexes for table `notifications`
 --
 ALTER TABLE `notifications`
   ADD PRIMARY KEY (`id`);
 
 --
--- Index pour la table `posts`
---
-ALTER TABLE `posts`
-  ADD PRIMARY KEY (`post_id`);
-
---
--- Index pour la table `r_star`
+-- Indexes for table `r_star`
 --
 ALTER TABLE `r_star`
   ADD PRIMARY KEY (`id`);
 
 --
--- Index pour la table `saved`
+-- Indexes for table `saved`
 --
 ALTER TABLE `saved`
   ADD PRIMARY KEY (`main_id`);
 
 --
--- Index pour la table `supportbox`
+-- Indexes for table `signup`
+--
+ALTER TABLE `signup`
+  ADD PRIMARY KEY (`main_id`);
+
+--
+-- Indexes for table `supportbox`
 --
 ALTER TABLE `supportbox`
   ADD PRIMARY KEY (`id`);
 
 --
--- Index pour la table `typing_m`
+-- Indexes for table `typing_m`
 --
 ALTER TABLE `typing_m`
   ADD PRIMARY KEY (`id`);
 
 --
--- Index pour la table `users`
+-- Indexes for table `wpost`
 --
-ALTER TABLE `users`
-  ADD PRIMARY KEY (`main_id`);
+ALTER TABLE `wpost`
+  ADD PRIMARY KEY (`post_id`);
 
 --
--- AUTO_INCREMENT pour les tables déchargées
+-- AUTO_INCREMENT for dumped tables
 --
 
 --
--- AUTO_INCREMENT pour la table `comments`
+-- AUTO_INCREMENT for table `comments`
 --
 ALTER TABLE `comments`
   MODIFY `c_id` bigint(50) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT pour la table `follow`
+-- AUTO_INCREMENT for table `follow`
 --
 ALTER TABLE `follow`
-  MODIFY `id` bigint(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
--- AUTO_INCREMENT pour la table `likes`
+-- AUTO_INCREMENT for table `likes`
 --
 ALTER TABLE `likes`
-  MODIFY `id` bigint(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
--- AUTO_INCREMENT pour la table `messages`
+-- AUTO_INCREMENT for table `messages`
 --
 ALTER TABLE `messages`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
--- AUTO_INCREMENT pour la table `notifications`
+-- AUTO_INCREMENT for table `notifications`
 --
 ALTER TABLE `notifications`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
--- AUTO_INCREMENT pour la table `r_star`
+-- AUTO_INCREMENT for table `r_star`
 --
 ALTER TABLE `r_star`
-  MODIFY `id` bigint(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
--- AUTO_INCREMENT pour la table `saved`
+-- AUTO_INCREMENT for table `saved`
 --
 ALTER TABLE `saved`
-  MODIFY `main_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `main_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- AUTO_INCREMENT pour la table `supportbox`
+-- AUTO_INCREMENT for table `signup`
+--
+ALTER TABLE `signup`
+  MODIFY `main_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+
+--
+-- AUTO_INCREMENT for table `supportbox`
 --
 ALTER TABLE `supportbox`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT pour la table `typing_m`
+-- AUTO_INCREMENT for table `typing_m`
 --
 ALTER TABLE `typing_m`
-  MODIFY `id` bigint(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT pour la table `users`
---
-ALTER TABLE `users`
-  MODIFY `main_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

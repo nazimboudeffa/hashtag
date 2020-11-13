@@ -1,9 +1,10 @@
 <?php
 session_start();
-if (!isset($config['SystemRootPath'])) {
-    include "../config/config.php";
-}
-include($config['SystemRootPath'] . "config/connect.php");
+if (!isset($global['systemRootPath'])) {
+    require_once '../config/config.php';
+};
+include($global['systemRootPath'] . "config/connect.php");
+include($global['systemRootPath'] . "langs/set_lang.php");
 include ("time_function.php");
 include ("num_k_m_count.php");
 session_start();
@@ -21,7 +22,7 @@ $ictodbsql = "INSERT INTO comments
 VALUES
 (:c_id,:s_id,:get_post_id,:comment_content,:comment_time)
 ";
-$insert_comment_toDB = $con->prepare($ictodbsql);
+$insert_comment_toDB = $conn->prepare($ictodbsql);
 $insert_comment_toDB->bindParam(':s_id',$s_id,PDO::PARAM_INT);
 $insert_comment_toDB->bindParam(':c_id',$c_id,PDO::PARAM_INT);
 $insert_comment_toDB->bindParam(':get_post_id',$get_post_id,PDO::PARAM_INT);
@@ -31,8 +32,8 @@ $insert_comment_toDB->execute();
 }
 
 
-    $query2_sql = "SELECT * FROM users WHERE id=:s_id";
-    $query2 = $con->prepare($query2_sql);
+    $query2_sql = "SELECT * FROM signup WHERE id=:s_id";
+    $query2 = $conn->prepare($query2_sql);
     $query2->bindParam(':s_id',$s_id,PDO::PARAM_INT);
     $query2->execute();
     while ($query_fetch2 = $query2->fetch(PDO::FETCH_ASSOC)) {
@@ -95,7 +96,7 @@ $insert_comment_toDB->execute();
 </table>
 ";
 // send notification to user
-$get_post_authorId = $con->prepare("SELECT author_id FROM posts WHERE post_id=:get_post_id");
+$get_post_authorId = $conn->prepare("SELECT author_id FROM wpost WHERE post_id=:get_post_id");
 $get_post_authorId->bindParam(':get_post_id',$get_post_id,PDO::PARAM_INT);
 $get_post_authorId->execute();
 while ($getAuthor = $get_post_authorId->fetch(PDO::FETCH_ASSOC)) {
@@ -106,7 +107,7 @@ $notifyType = "comment";
 $nSeen = "0";
 $nTime = time();
 if ($for_id != $s_id) {
-$sendNotification = $con->prepare("INSERT INTO notifications (n_id, from_id, for_id, notifyType_id, notifyType, seen, time) VALUES (:nId, :fromId, :forId, :notifyTypeId, :notifyType, :seen, :nTime)");
+$sendNotification = $conn->prepare("INSERT INTO notifications (n_id, from_id, for_id, notifyType_id, notifyType, seen, time) VALUES (:nId, :fromId, :forId, :notifyTypeId, :notifyType, :seen, :nTime)");
 $sendNotification->bindParam(':nId',$nId,PDO::PARAM_INT);
 $sendNotification->bindParam(':fromId',$s_id,PDO::PARAM_INT);
 $sendNotification->bindParam(':forId',$for_id,PDO::PARAM_INT);

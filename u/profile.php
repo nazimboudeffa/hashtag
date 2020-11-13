@@ -1,24 +1,38 @@
 <?php
 error_reporting(E_ALL ^ E_NOTICE);
 session_start();
+if (!isset($global['systemRootPath'])) {
+    require_once '../config/config.php';
+};
 $myId = $_SESSION['id'];
+include($global['systemRootPath'] . "config/connect.php");
+include($global['systemRootPath'] . "includes/fetch_users_info.php");
+include($global['systemRootPath'] . "includes/time_function.php");
+include($global['systemRootPath'] . "includes/country_name_function.php");
+include($global['systemRootPath'] . "includes/num_k_m_count.php");
+include($global['systemRootPath'] . "langs/set_lang.php");
 
-if (!isset($config['SystemRootPath'])) {
-    include "../config/config.php";
-}
-
-include($config['SystemRootPath'] . "config/connect.php");
-include($config['SystemRootPath'] . "includes/fetch_users_info.php");
-include($config['SystemRootPath'] . "includes/time_function.php");
-include($config['SystemRootPath'] . "includes/country_name_function.php");
-include($config['SystemRootPath'] . "includes/num_k_m_count.php");
 if(!isset($_SESSION['Username'])){
     header("location: ../index");
 }
+
 $_SESSION['user_photo'] = $row_author_photo;
+
+// ================================ user verified badge style
+$verifyUser = "<span style='color: #03A9F4;' data-toggle='tooltip' data-placement='top' title='".lang('verified_page')."' class='fa fa-check-circle verifyUser'></span>";
+// ================================ check user if exist or not (for removed account).
+$usrSessID = $_SESSION['id'];
+$usrRemovedAcc = $conn->prepare("SELECT id FROM signup WHERE id=:usrSessID");
+$usrRemovedAcc->bindParam(':usrSessID',$usrSessID,PDO::PARAM_INT);
+$usrRemovedAcc->execute();
+$$usrRemovedAccCount = $usrRemovedAcc->rowCount();
+if (isset($usrSessID)) {
+	if($$usrRemovedAccCount < 1){
+		session_destroy();
+	}
+}
+
 ?>
-
-
 <html dir="<?php echo lang('html_dir'); ?>">
 <head>
     <title><?php echo $row_username; ?> | Hashtag</title>
@@ -27,7 +41,7 @@ $_SESSION['user_photo'] = $row_author_photo;
     <meta name="keywords" content="social network,social media,Hashtag,meet,free platform">
     <meta name="author" content="Munaf Aqeel Mahdi">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <?php include $config['SystemRootPath'] . "includes/head_imports_main.php";?>
+    <?php include $global['systemRootPath'] . "includes/head_imports_main.php";?>
     </script>
     <style type="text/css">
         .user_info{
@@ -59,10 +73,9 @@ $_SESSION['user_photo'] = $row_author_photo;
         }
     </style>
 </head>
-    <body onload="fetchPosts_DB('user')">
+<body onload="fetchUserPosts_DB()">
 <!--=============================[ NavBar ]========================================-->
-<?php include $config['SystemRootPath'] . "includes/navbar_main.php"; ?>
-
+<?php include "../includes/navbar_main.php"; ?>
 <?php
 if (filter_var(htmlspecialchars($_GET['u']),FILTER_SANITIZE_STRING) == $row_username) {
 ?>
@@ -70,7 +83,7 @@ if (filter_var(htmlspecialchars($_GET['u']),FILTER_SANITIZE_STRING) == $row_user
         <div class="profile_sec1_sec2" align="center">
         <div class="profile_cover">
                     <?php
-                    include $config['SystemRootPath'] . "includes/upload_cover_photo.php";
+                    include $global['systemRootPath'] . "includes/uploadcoverphoto.php";
                     ?>
         <div id="coverImg" style="height: 100%; width: 100%; background: url(../imgs/user_covers/<?php echo $row_user_cover_photo; ?>) no-repeat center center; background-size: cover;">
             <?php
@@ -104,26 +117,26 @@ if (filter_var(htmlspecialchars($_GET['u']),FILTER_SANITIZE_STRING) == $row_user
         <div class="profile_menu">
             <div class="profile_menu_details" style="display:inline-flex;">
                 <?php
-                $posts_num_sql = "SELECT post_id FROM posts WHERE author_id=:row_id";
-                $posts_num = $con->prepare($posts_num_sql);
+                $posts_num_sql = "SELECT post_id FROM wpost WHERE author_id=:row_id";
+                $posts_num = $conn->prepare($posts_num_sql);
                 $posts_num->bindParam(':row_id',$row_id,PDO::PARAM_INT);
                 $posts_num->execute();
                 $posts_num_int = $posts_num->rowCount();
                 //=====================================================================
                 $stars_num_sql = "SELECT id FROM r_star WHERE p_id=:row_id";
-                $stars_num = $con->prepare($stars_num_sql);
+                $stars_num = $conn->prepare($stars_num_sql);
                 $stars_num->bindParam(':row_id',$row_id,PDO::PARAM_INT);
                 $stars_num->execute();
                 $stars_num_int = $stars_num->rowCount();
                 //=====================================================================
                 $followers_sql = "SELECT id FROM follow WHERE uf_two=:row_id";
-                $followers = $con->prepare($followers_sql);
+                $followers = $conn->prepare($followers_sql);
                 $followers->bindParam(':row_id',$row_id,PDO::PARAM_INT);
                 $followers->execute();
                 $followers_num = $followers->rowCount();
                 //=====================================================================
                 $following_sql = "SELECT id FROM follow WHERE uf_one=:row_id";
-                $following = $con->prepare($following_sql);
+                $following = $conn->prepare($following_sql);
                 $following->bindParam(':row_id',$row_id,PDO::PARAM_INT);
                 $following->execute();
                 $following_num = $following->rowCount();
@@ -162,9 +175,9 @@ if (filter_var(htmlspecialchars($_GET['u']),FILTER_SANITIZE_STRING) == $row_user
          }
         ?>
         <div class="profile_picture_img profile_ppicture" style="<?php echo $profile_pic_border_var;?>">
-            <img src="<?php echo $config['WebSiteRootURL'] . "imgs/user_imgs/$row_user_photo";?>" alt="<?php echo $row_fullname;?>" id="profilePhotoPreview" />
+            <img src="<?php echo "../imgs/user_imgs/$row_user_photo";?>" alt="<?php echo $row_fullname;?>" id="profilePhotoPreview" />
             <?php
-            include $config['SystemRootPath'] . "includes/upload_profile_photo.php";
+            include "../includes/uploadprofilephoto.php";
             if($_SESSION['Username'] == $row_username){
                 echo "
                 <div class=\"change_user_photo\">
@@ -195,7 +208,7 @@ if (filter_var(htmlspecialchars($_GET['u']),FILTER_SANITIZE_STRING) == $row_user
             <?php
                if($row_id != $_SESSION['id']){
                 $csql = "SELECT id FROM follow WHERE uf_one=:s_id AND uf_two=:row_id";
-                $c = $con->prepare($csql);
+                $c = $conn->prepare($csql);
                 $c->bindParam(':s_id',$s_id,PDO::PARAM_INT);
                 $c->bindParam(':row_id',$row_id,PDO::PARAM_INT);
                 $c->execute();
@@ -206,7 +219,7 @@ if (filter_var(htmlspecialchars($_GET['u']),FILTER_SANITIZE_STRING) == $row_user
                     echo "<span id='followUnfollow_$row_id' style='cursor:pointer;width:100%;display:inline-flex;'><button class=\"follow_btn\" onclick=\"followUnfollow('$row_id')\"><span class=\"fa fa-plus-circle\"></span> ".lang('followBtn_str')."</button></span>";
                 }
                 $sql = "SELECT id FROM r_star WHERE u_id = :uid AND p_id =:pid";
-                $starCheck = $con->prepare($sql);
+                $starCheck = $conn->prepare($sql);
                 $starCheck->bindParam(':uid',$myId,PDO::PARAM_INT);
                 $starCheck->bindParam(':pid',$row_id,PDO::PARAM_INT);
                 $starCheck->execute();
@@ -261,9 +274,12 @@ if (filter_var(htmlspecialchars($_GET['u']),FILTER_SANITIZE_STRING) == $row_user
             if ($row_id == $_SESSION['id']) {
             ?>
             <div class="user_info">
-            <!-- START PLUGIN NOTEPAD -->
-
-            <!-- END PLUGIN NOTEPAD -->
+            <p><span class="fa fa-lock"></span> <?php echo lang('my_notepad');?><br><label style="font-weight: normal;color: rgba(0, 0, 0, 0.31);font-size: small;"><?php echo lang('onlyUcanCThis');?></label>
+            </p>
+            <p class="profile_mynotepad_box">
+            </p>
+                <a href="../plugins/notepad/new" class="green_flat_btn"><?php echo lang('new_note');?></a>
+                <a href="../plugins/notepad/" class="silver_flat_btn"><?php echo lang('see_all_notes');?></a>
             </div>
             <?php
             }
@@ -279,8 +295,8 @@ switch (filter_var($_GET['ut'],FILTER_SANITIZE_STRING)) {
             <?php
             $u_id = $row_id;
             $emptyImg = '';
-            $getphotos_sql = "SELECT * FROM posts WHERE author_id=:u_id AND post_img != :emptyImg ORDER BY post_time DESC";
-            $getphotos = $con->prepare($getphotos_sql);
+            $getphotos_sql = "SELECT * FROM wpost WHERE author_id=:u_id AND post_img != :emptyImg ORDER BY post_time DESC";
+            $getphotos = $conn->prepare($getphotos_sql);
             $getphotos->bindParam(':u_id',$u_id,PDO::PARAM_INT);
             $getphotos->bindParam(':emptyImg',$emptyImg,PDO::PARAM_STR);
             $getphotos->execute();
@@ -302,8 +318,8 @@ switch (filter_var($_GET['ut'],FILTER_SANITIZE_STRING)) {
                 $timeago = time_ago($fetch_post_time);
                 $fetch_post_status = $fetchMyPhotos['p_status'];
 
-                $quesql = "SELECT * FROM users WHERE id=:fetch_author_id";
-                $query = $con->prepare($quesql);
+                $quesql = "SELECT * FROM signup WHERE id=:fetch_author_id";
+                $query = $conn->prepare($quesql);
                 $query->bindParam(':fetch_author_id', $fetch_author_id, PDO::PARAM_INT);
                 $query->execute();
                 while ($author_fetch = $query->fetch(PDO::FETCH_ASSOC)) {
@@ -345,7 +361,7 @@ if ($_SESSION['id'] == $row_id) {
 <?php
 $s_id = $_SESSION['id'];
 $getfollowers_sql = "SELECT * FROM follow WHERE uf_two=:row_id";
-$getfollowers = $con->prepare($getfollowers_sql);
+$getfollowers = $conn->prepare($getfollowers_sql);
 $getfollowers->bindParam(':row_id',$row_id,PDO::PARAM_INT);
 $getfollowers->execute();
 $num_followers = $getfollowers->rowCount();
@@ -354,8 +370,8 @@ echo "<p style='color:gray;padding:5px;margin:0;font-size:18px;text-align:center
 }else{
 while ($getfollow = $getfollowers->fetch(PDO::FETCH_ASSOC)) {
 $getfollow_id = $getfollow['uf_one'];
-$ufollowers_sql = "SELECT * FROM users WHERE id=:getfollow_id";
-$ufollowers = $con->prepare($ufollowers_sql);
+$ufollowers_sql = "SELECT * FROM signup WHERE id=:getfollow_id";
+$ufollowers = $conn->prepare($ufollowers_sql);
 $ufollowers->bindParam(':getfollow_id',$getfollow_id,PDO::PARAM_INT);
 $ufollowers->execute();
 if ($getfollow_id == $_SESSION['id']) {
@@ -380,7 +396,7 @@ $username_followers = $fetch_followers['Username'];
 $userphoto_followers = $fetch_followers['Userphoto'];
 $verify_followers = $fetch_followers['verify'];
 $followBtn_sql = "SELECT id FROM follow WHERE uf_one=:s_id AND uf_two=:id_followers";
-$followBtn = $con->prepare($followBtn_sql);
+$followBtn = $conn->prepare($followBtn_sql);
 $followBtn->bindParam(':s_id',$s_id,PDO::PARAM_INT);
 $followBtn->bindParam(':id_followers',$id_followers,PDO::PARAM_INT);
 $followBtn->execute();
@@ -434,7 +450,7 @@ if ($_SESSION['id'] == $row_id) {
 <?php
 $s_id = $_SESSION['id'];
 $getfolloweing_sql = "SELECT * FROM follow WHERE uf_one=:row_id";
-$getfolloweing = $con->prepare($getfolloweing_sql);
+$getfolloweing = $conn->prepare($getfolloweing_sql);
 $getfolloweing->bindParam(':row_id',$row_id,PDO::PARAM_INT);
 $getfolloweing->execute();
 $num_followers = $getfolloweing->rowCount();
@@ -443,8 +459,8 @@ echo "<p style='color:gray;padding:15px;margin:0;font-size:18px;text-align:cente
 }else{
 while ($getfolloweing_fetch = $getfolloweing->fetch(PDO::FETCH_ASSOC)) {
 $getfolloweing_id = $getfolloweing_fetch['uf_two'];
-$ufolloweing_sql = "SELECT * FROM users WHERE id=:getfolloweing_id";
-$ufolloweing = $con->prepare($ufolloweing_sql);
+$ufolloweing_sql = "SELECT * FROM signup WHERE id=:getfolloweing_id";
+$ufolloweing = $conn->prepare($ufolloweing_sql);
 $ufolloweing->bindParam(':getfolloweing_id',$getfolloweing_id,PDO::PARAM_INT);
 $ufolloweing->execute();
 if ($getfolloweing_id == $_SESSION['id']) {
@@ -469,7 +485,7 @@ $username_followeing = $fetch_followeing['Username'];
 $userphoto_followeing = $fetch_followeing['Userphoto'];
 $verify_followeing = $fetch_followeing['verify'];
 $followBtn_sql = "SELECT id FROM follow WHERE uf_one=:s_id AND uf_two=:id_followeing";
-$followBtn = $con->prepare($followBtn_sql);
+$followBtn = $conn->prepare($followBtn_sql);
 $followBtn->bindParam(':s_id',$s_id,PDO::PARAM_INT);
 $followBtn->bindParam(':id_followeing',$id_followeing,PDO::PARAM_INT);
 $followBtn->execute();
@@ -511,71 +527,71 @@ case 'stars':
 <?php
 $s_id = $_SESSION['id'];
 $getS_sql = "SELECT * FROM r_star WHERE p_id =:row_id";
-$getS = $con->prepare($getS_sql);
+$getS = $conn->prepare($getS_sql);
 $getS->bindParam(':row_id',$row_id,PDO::PARAM_INT);
 $getS->execute();
 $getS_count = $getS->rowCount();
 if ($getS_count == 0) {
     echo "<p style='color:gray;padding:15px;margin:0;font-size:18px;text-align:center;'>".lang('nothingToShow')."</p>";
 }else{
-while ($getS_row = $getS->fetch(PDO::FETCH_ASSOC)) {
-    $getuserid = $getS_row['u_id'];
-    $getuser_sql = "SELECT * FROM users WHERE id=:getuserid";
-    $getuser = $con->prepare($getuser_sql);
-    $getuser->bindParam(':getuserid',$getuserid,PDO::PARAM_INT);
-    $getuser->execute();
-    if ($getuserid == $_SESSION['id']) {
-    if ($_SESSION['verify'] == "1") {
-     $verifypage_var = $verifyUser;
-    }else{
-     $verifypage_var = "";
-    }
-    echo "
-    <table class='user_follow_box'>
-    <tr>
-    <td class='user_info_tdi'><div><img src=\"../imgs/user_imgs/".$_SESSION['Userphoto']."\" alt=\"".$_SESSION['Fullname']."\" /></div></td>
-    <td style='width: 70%;'><a href=\"".$_SESSION['Username']."\" class='user_follow_box_a'><p>".$_SESSION['Fullname']." ".$verifypage_var."<br><span style='color:gray;'>@".$_SESSION['Username']."</span></a></td>
-    </tr>
-    </table>
-    ";
-    }
-    while ($getuser_row = $getuser->fetch(PDO::FETCH_ASSOC)) {
-        $id_stars = $getuser_row['id'];
-        $fullname_stars = $getuser_row['Fullname'];
-        $username_stars = $getuser_row['Username'];
-        $userphoto_stars = $getuser_row['Userphoto'];
-        $verify_stars = $getuser_row['verify'];
-        $followBtn_sql = "SELECT id FROM follow WHERE uf_one=:s_id AND uf_two=:id_stars";
-        $followBtn = $con->prepare($followBtn_sql);
-        $followBtn->bindParam(':s_id',$s_id,PDO::PARAM_INT);
-        $followBtn->bindParam(':id_stars',$id_stars,PDO::PARAM_INT);
-        $followBtn->execute();
-        $followBtn_num = $followBtn->rowCount();
-        if ($followBtn_num > 0){
-            $follow_btn = "<span id='followUnfollow_$id_stars' style='cursor:pointer'><button class=\"unfollow_btn\" onclick=\"followUnfollow('$id_stars')\"><span class=\"fa fa-check\"></span> ".lang('followingBtn_str')."</button></span>";
-        }else{
-            $follow_btn = "<span id='followUnfollow_$id_stars' style='cursor:pointer'><button class=\"follow_btn\" onclick=\"followUnfollow('$id_stars')\"><span class=\"fa fa-plus-circle\"></span> ".lang('followBtn_str')."</button></span>";
-        }
+  while ($getS_row = $getS->fetch(PDO::FETCH_ASSOC)) {
+      $getuserid = $getS_row['u_id'];
+      $getuser_sql = "SELECT * FROM signup WHERE id=:getuserid";
+      $getuser = $conn->prepare($getuser_sql);
+      $getuser->bindParam(':getuserid',$getuserid,PDO::PARAM_INT);
+      $getuser->execute();
+      if ($getuserid == $_SESSION['id']) {
+      if ($_SESSION['verify'] == "1") {
+       $verifypage_var = $verifyUser;
+      }else{
+       $verifypage_var = "";
+      }
+      echo "
+      <table class='user_follow_box'>
+      <tr>
+      <td class='user_info_tdi'><div><img src=\"../imgs/user_imgs/".$_SESSION['Userphoto']."\" alt=\"".$_SESSION['Fullname']."\" /></div></td>
+      <td style='width: 70%;'><a href=\"".$_SESSION['Username']."\" class='user_follow_box_a'><p>".$_SESSION['Fullname']." ".$verifypage_var."<br><span style='color:gray;'>@".$_SESSION['Username']."</span></a></td>
+      </tr>
+      </table>
+      ";
+      }
+      while ($getuser_row = $getuser->fetch(PDO::FETCH_ASSOC)) {
+          $id_stars = $getuser_row['id'];
+          $fullname_stars = $getuser_row['Fullname'];
+          $username_stars = $getuser_row['Username'];
+          $userphoto_stars = $getuser_row['Userphoto'];
+          $verify_stars = $getuser_row['verify'];
+          $followBtn_sql = "SELECT id FROM follow WHERE uf_one=:s_id AND uf_two=:id_stars";
+          $followBtn = $conn->prepare($followBtn_sql);
+          $followBtn->bindParam(':s_id',$s_id,PDO::PARAM_INT);
+          $followBtn->bindParam(':id_stars',$id_stars,PDO::PARAM_INT);
+          $followBtn->execute();
+          $followBtn_num = $followBtn->rowCount();
+          if ($followBtn_num > 0){
+              $follow_btn = "<span id='followUnfollow_$id_stars' style='cursor:pointer'><button class=\"unfollow_btn\" onclick=\"followUnfollow('$id_stars')\"><span class=\"fa fa-check\"></span> ".lang('followingBtn_str')."</button></span>";
+          }else{
+              $follow_btn = "<span id='followUnfollow_$id_stars' style='cursor:pointer'><button class=\"follow_btn\" onclick=\"followUnfollow('$id_stars')\"><span class=\"fa fa-plus-circle\"></span> ".lang('followBtn_str')."</button></span>";
+          }
 
-        if ($verify_stars == "1"){
-        $verifypage_var = $verifyUser;
-        }else{
-        $verifypage_var = "";
-        }
+          if ($verify_stars == "1"){
+          $verifypage_var = $verifyUser;
+          }else{
+          $verifypage_var = "";
+          }
 
-        if($id_stars != $_SESSION['id']){
-               echo "
-        <table class='user_follow_box' id='UserUnfollow_$id_stars'>
-        <tr>
-        <td class='user_info_tdi'><div><img src=\"../imgs/user_imgs/$userphoto_stars\" alt=\"$fullname_stars\" /></div></td>
-        <td style='width: 70%;'><a href=\"$username_stars\" class='user_follow_box_a'><p>$fullname_stars $verifypage_var<br><span style='color:gray;'>@$username_stars</span></a></td>
-        <td style='width: 100%;'><span style='float:".lang('float2').";'>$follow_btn</span></td>
-        </tr>
-        </table>
-        ";
-        }
-    }
-}
+          if($id_stars != $_SESSION['id']){
+                 echo "
+          <table class='user_follow_box' id='UserUnfollow_$id_stars'>
+          <tr>
+          <td class='user_info_tdi'><div><img src=\"../imgs/user_imgs/$userphoto_stars\" alt=\"$fullname_stars\" /></div></td>
+          <td style='width: 70%;'><a href=\"$username_stars\" class='user_follow_box_a'><p>$fullname_stars $verifypage_var<br><span style='color:gray;'>@$username_stars</span></a></td>
+          <td style='width: 100%;'><span style='float:".lang('float2').";'>$follow_btn</span></td>
+          </tr>
+          </table>
+          ";
+          }
+      }
+  }
 }
 ?>
 </div>
@@ -591,35 +607,35 @@ default:
 <?php
 $s_id = $_SESSION['id'];
 $emptyImg = '';
-$getphotos_sql = "SELECT * FROM posts WHERE author_id=:s_id AND post_img != :emptyImg ORDER BY post_time";
-$getphotos = $con->prepare($getphotos_sql);
+$getphotos_sql = "SELECT * FROM wpost WHERE author_id=:s_id AND post_img != :emptyImg ORDER BY post_time";
+$getphotos = $conn->prepare($getphotos_sql);
 $getphotos->bindParam(':s_id',$s_id,PDO::PARAM_INT);
 $getphotos->bindParam(':emptyImg',$emptyImg,PDO::PARAM_STR);
 $getphotos->execute();
 $getphotos_num = $getphotos->rowCount();
-if ($_SESSION['id'] == $row_id) {
-    include($config['SystemRootPath'] . "includes/w_post_form.php");
-}
+  if ($_SESSION['id'] == $row_id) {
+      include("../includes/w_post_form.php");
+  }
 ?>
 <?php
-if ($getphotos_num > 0) {
-    include($config['SystemRootPath'] . "includes/my_photos_profile.php");
-}
-if ($posts_num_int < 1) {
-if ($_SESSION['id'] == $row_id) {
-echo "
-<div class='post'>
-<p style='color: gray;text-align: center;padding: 15px;margin: 0px;'>".lang('you_have_not_posted_anything_yet').".</p>
-</div>
-";
- }else{
-echo "
-<div class='post'>
-<p style='color: gray;text-align: center;padding: 15px;margin: 0px;'>$row_fullname ".lang('has_not_posted_anything_yet').".</p>
-</div>
-";
- }
-}
+  if ($getphotos_num > 0) {
+      include("../includes/myphotosProfile.php");
+  }
+  if ($posts_num_int < 1) {
+    if ($_SESSION['id'] == $row_id) {
+    echo "
+    <div class='post'>
+    <p style='color: gray;text-align: center;padding: 15px;margin: 0px;'>".lang('you_have_not_posted_anything_yet').".</p>
+    </div>
+    ";
+     }else{
+    echo "
+    <div class='post'>
+    <p style='color: gray;text-align: center;padding: 15px;margin: 0px;'>$row_fullname ".lang('has_not_posted_anything_yet').".</p>
+    </div>
+    ";
+     }
+  }
 ?>
 
 <!--========================================================================-->
@@ -646,7 +662,7 @@ echo "
                   <p style="color: #b1b1b1;text-align: center;padding: 15px;margin: 0px;font-size: 18px;"><?php echo lang('noMoreStories'); ?></p>
                 </div>
                 <div class="post  loading-info" id="LoadMorePostsBtn" style="display: none;">
-                  <button class="blue_flat_btn" style="width: 100%" onclick="fetchPosts_DB('user')">Load more</button>
+                  <button class="blue_flat_btn" style="width: 100%" onclick="fetchUserPosts_DB()">Load more</button>
                 </div>
                 <input type="hidden" id="GetLimitOfPosts" value="0">
 
@@ -699,7 +715,7 @@ border: 1px solid rgba(217, 217, 217, 0.36);
 }
 ?>
 <!--=================================================footer==========================================================-->
-<?php include($config['SystemRootPath'] . "includes/footer.php"); ?>
-    <?php include $config['SystemRootPath'] . "includes/end_js_codes.php"; ?>
+    <?php include "../includes/footer.php"; ?>
+    <?php include "../includes/endJScodes.php"; ?>
     </body>
 </html>

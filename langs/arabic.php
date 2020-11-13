@@ -2,7 +2,6 @@
 function lang($txt){
     static $lang = array(
     // home page
-    'site_name' => 'Hashtag',
     'html_dir' => 'rtl',
     'homeLinks' => 'right',
     'sponsored_align' => 'right',

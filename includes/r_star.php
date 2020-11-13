@@ -1,21 +1,22 @@
 <?php
-if (!isset($config['SystemRootPath'])) {
-    include "../config/config.php";
-}
-include($config['SystemRootPath'] . "config/connect.php");
 session_start();
+if (!isset($global['systemRootPath'])) {
+    require_once '../config/config.php';
+};
+include($global['systemRootPath'] . "config/connect.php");
+include($global['systemRootPath'] . "langs/set_lang.php");
 $uid = htmlentities($_POST['uid'], ENT_QUOTES);
 $pid = htmlentities($_POST['pid'], ENT_QUOTES);
 
 $sql = "SELECT id FROM r_star WHERE u_id = :uid AND p_id =:pid";
-$starCheck = $con->prepare($sql);
+$starCheck = $conn->prepare($sql);
 $starCheck->bindParam(':uid',$uid,PDO::PARAM_INT);
 $starCheck->bindParam(':pid',$pid,PDO::PARAM_INT);
 $starCheck->execute();
 $starCheckExist = $starCheck->rowCount();
 if ($starCheckExist > 0) {
 	$add_sql = "DELETE FROM r_star WHERE u_id = :uid AND p_id = :pid";
-	$add_star = $con->prepare($add_sql);
+	$add_star = $conn->prepare($add_sql);
 	$add_star->bindParam(':uid',$uid,PDO::PARAM_INT);
 	$add_star->bindParam(':pid',$pid,PDO::PARAM_INT);
 	$add_star->execute();
@@ -23,7 +24,7 @@ if ($starCheckExist > 0) {
 	// Delete notification to user
     $s_id = $_SESSION['id'];
     $notifyType = "star";
-    $sendNotification = $con->prepare("DELETE FROM notifications WHERE from_id =:from_id AND for_id=:for_id AND notifyType_id=:ntId AND notifyType=:notifyType");
+    $sendNotification = $conn->prepare("DELETE FROM notifications WHERE from_id =:from_id AND for_id=:for_id AND notifyType_id=:ntId AND notifyType=:notifyType");
     $sendNotification->bindParam(':from_id',$s_id,PDO::PARAM_INT);
     $sendNotification->bindParam(':for_id',$pid,PDO::PARAM_INT);
     $sendNotification->bindParam(':ntId',$s_id,PDO::PARAM_INT);
@@ -32,7 +33,7 @@ if ($starCheckExist > 0) {
     // ==================================
 }else{
 	$add_sql = "INSERT INTO r_star (u_id,p_id) VALUES (:uid,:pid)";
-	$add_star = $con->prepare($add_sql);
+	$add_star = $conn->prepare($add_sql);
 	$add_star->bindParam(':uid',$uid,PDO::PARAM_INT);
 	$add_star->bindParam(':pid',$pid,PDO::PARAM_INT);
 	$add_star->execute();
@@ -44,7 +45,7 @@ if ($starCheckExist > 0) {
     $nSeen = "0";
     $nTime = time();
     if ($pid != $s_id) {
-    $sendNotification = $con->prepare("INSERT INTO notifications (n_id, from_id, for_id, notifyType_id, notifyType, seen, time) VALUES (:nId, :fromId, :forId, :notifyTypeId, :notifyType, :seen, :nTime)");
+    $sendNotification = $conn->prepare("INSERT INTO notifications (n_id, from_id, for_id, notifyType_id, notifyType, seen, time) VALUES (:nId, :fromId, :forId, :notifyTypeId, :notifyType, :seen, :nTime)");
     $sendNotification->bindParam(':nId',$nId,PDO::PARAM_INT);
     $sendNotification->bindParam(':fromId',$s_id,PDO::PARAM_INT);
     $sendNotification->bindParam(':forId',$pid,PDO::PARAM_INT);

@@ -1,4 +1,4 @@
 <?php
-$config['SystemRootPath'] = 'C:/Users/admin/Documents/GitHub/hashtag/';
-$config['WebSiteRootURL'] = 'http://hashtag/';
+$global['systemRootPath'] = 'D:/GitHub/nazimboudeffa/hashtag/';
+$global['webSiteRootURL'] = 'http://hashtag/';
 ?>

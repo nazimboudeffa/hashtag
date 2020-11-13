@@ -1,7 +1,9 @@
 <?php
 error_reporting(E_ALL ^ E_NOTICE);
 session_start();
-
+if (!isset($global['systemRootPath'])) {
+    require_once 'config/config.php';
+};
 include("config/connect.php");
 include("includes/fetch_users_info.php");
 include ("includes/time_function.php");
@@ -9,7 +11,7 @@ include("includes/country_name_function.php");
 if(!isset($_SESSION['Username'])){
     header("location: login.php");
 }
-include($config['systemRootPath'] . "langs/set_lang.php");
+include($global['systemRootPath'] . "langs/set_lang.php");
 $tc = filter_var(htmlentities($_GET['tc']),FILTER_SANITIZE_STRING);
 // =============================[ prepare input variable's ]=================================
 $session_un = $_SESSION['Username'];
@@ -73,7 +75,7 @@ if (isset($_POST['general_save_changes'])) {
             </ul>";
             $stop = "1";
         }
-        $unExist = $con->prepare("SELECT Username FROM users WHERE Username =:username_var");
+        $unExist = $conn->prepare("SELECT Username FROM signup WHERE Username =:username_var");
         $unExist->bindParam(':username_var',$username_var,PDO::PARAM_STR);
         $unExist->execute();
         $unExistCount = $unExist->rowCount();
@@ -83,7 +85,7 @@ if (isset($_POST['general_save_changes'])) {
            $stop = "1";
            }
         }
-        $emExist = $con->prepare("SELECT Email FROM users WHERE Email =:email_var");
+        $emExist = $conn->prepare("SELECT Email FROM signup WHERE Email =:email_var");
         $emExist->bindParam(':email_var',$email_var,PDO::PARAM_STR);
         $emExist->execute();
         $emExistCount = $emExist->rowCount();
@@ -98,8 +100,8 @@ if (isset($_POST['general_save_changes'])) {
             $stop = "1";
         }
          if ($stop != "1") {
-         $update_info_sql = "UPDATE users SET Fullname= :fullname_var,Username= :username_var,Email= :email_var,Password= :new_password_var,gender= :gender_var WHERE username= :session_un";
-         $update_info = $con->prepare($update_info_sql);
+         $update_info_sql = "UPDATE signup SET Fullname= :fullname_var,Username= :username_var,Email= :email_var,Password= :new_password_var,gender= :gender_var WHERE username= :session_un";
+         $update_info = $conn->prepare($update_info_sql);
          $update_info->bindParam(':fullname_var',$fullname_var,PDO::PARAM_STR);
          $update_info->bindParam(':username_var',$username_var,PDO::PARAM_STR);
          $update_info->bindParam(':email_var',$email_var,PDO::PARAM_STR);
@@ -124,8 +126,8 @@ if (isset($_POST['general_save_changes'])) {
 // =============================[ Save Edit profile settings ]==============================
 if (isset($_POST['EditProfile_save_changes'])) {
 
-    $update_info_sql = "UPDATE users SET school= :school_var,work0= :work0_var,work= :work_var,country= :country_var,birthday= :birthday_var,website= :website_var,bio= :bio_var WHERE username= :session_un";
-     $update_info = $con->prepare($update_info_sql);
+    $update_info_sql = "UPDATE signup SET school= :school_var,work0= :work0_var,work= :work_var,country= :country_var,birthday= :birthday_var,website= :website_var,bio= :bio_var WHERE username= :session_un";
+     $update_info = $conn->prepare($update_info_sql);
      $update_info->bindParam(':school_var',$school_var,PDO::PARAM_STR);
      $update_info->bindParam(':work0_var',$work0_var,PDO::PARAM_STR);
      $update_info->bindParam(':work_var',$work_var,PDO::PARAM_STR);
@@ -151,8 +153,8 @@ if (isset($_POST['EditProfile_save_changes'])) {
 }
 // =============================[ Save Languages settings ]=================================
 if (isset($_POST['lang_save_changes'])) {
-     $update_info_sql = "UPDATE users SET language= :language_var WHERE username= :session_un";
-     $update_info = $con->prepare($update_info_sql);
+     $update_info_sql = "UPDATE signup SET language= :language_var WHERE username= :session_un";
+     $update_info = $conn->prepare($update_info_sql);
      $update_info->bindParam(':language_var',$language_var,PDO::PARAM_STR);
      $update_info->bindParam(':session_un',$session_un,PDO::PARAM_STR);
      $update_info->execute();
@@ -170,52 +172,52 @@ if (isset($_POST['removeA_save_changes'])) {
 if (!password_verify($remeveA_current_pass_var,$_SESSION['Password'])) {
     $removeA_save_result = "<p class='alertRed'>".lang('current_password_is_incorrect')."</p>";
 }else{
-     $remeveAccount_sql = "DELETE FROM users WHERE Username= :session_un";
-     $remeveAccount = $con->prepare($remeveAccount_sql);
+     $remeveAccount_sql = "DELETE FROM signup WHERE Username= :session_un";
+     $remeveAccount = $conn->prepare($remeveAccount_sql);
      $remeveAccount->bindParam(':session_un',$session_un,PDO::PARAM_STR);
      $remeveAccount->execute();
      $remeveAccount_sql = "DELETE FROM comments WHERE c_author_id= :myid";
-     $remeveAccount = $con->prepare($remeveAccount_sql);
+     $remeveAccount = $conn->prepare($remeveAccount_sql);
      $remeveAccount->bindParam(':myid',$myid,PDO::PARAM_STR);
      $remeveAccount->execute();
      $remeveAccount_sql = "DELETE FROM follow WHERE uf_one= :myid";
-     $remeveAccount = $con->prepare($remeveAccount_sql);
+     $remeveAccount = $conn->prepare($remeveAccount_sql);
      $remeveAccount->bindParam(':myid',$myid,PDO::PARAM_STR);
      $remeveAccount->execute();
      $remeveAccount_sql = "DELETE FROM follow WHERE uf_two= :myid";
-     $remeveAccount = $con->prepare($remeveAccount_sql);
+     $remeveAccount = $conn->prepare($remeveAccount_sql);
      $remeveAccount->bindParam(':myid',$myid,PDO::PARAM_STR);
      $remeveAccount->execute();
      $remeveAccount_sql = "DELETE FROM likes WHERE liker= :myid";
-     $remeveAccount = $con->prepare($remeveAccount_sql);
+     $remeveAccount = $conn->prepare($remeveAccount_sql);
      $remeveAccount->bindParam(':myid',$myid,PDO::PARAM_STR);
      $remeveAccount->execute();
      $remeveAccount_sql = "DELETE FROM mynotepad WHERE author_id= :myid";
-     $remeveAccount = $con->prepare($remeveAccount_sql);
+     $remeveAccount = $conn->prepare($remeveAccount_sql);
      $remeveAccount->bindParam(':myid',$myid,PDO::PARAM_STR);
      $remeveAccount->execute();
      $remeveAccount_sql = "DELETE FROM r_star WHERE u_id= :myid";
-     $remeveAccount = $con->prepare($remeveAccount_sql);
+     $remeveAccount = $conn->prepare($remeveAccount_sql);
      $remeveAccount->bindParam(':myid',$myid,PDO::PARAM_STR);
      $remeveAccount->execute();
      $remeveAccount_sql = "DELETE FROM r_star WHERE p_id= :myid";
-     $remeveAccount = $con->prepare($remeveAccount_sql);
+     $remeveAccount = $conn->prepare($remeveAccount_sql);
      $remeveAccount->bindParam(':myid',$myid,PDO::PARAM_STR);
      $remeveAccount->execute();
-     $remeveAccount_sql = "DELETE FROM posts WHERE author_id= :myid";
-     $remeveAccount = $con->prepare($remeveAccount_sql);
+     $remeveAccount_sql = "DELETE FROM wpost WHERE author_id= :myid";
+     $remeveAccount = $conn->prepare($remeveAccount_sql);
      $remeveAccount->bindParam(':myid',$myid,PDO::PARAM_STR);
      $remeveAccount->execute();
      $remeveAccount_sql = "DELETE FROM notifications WHERE from_id= :myid";
-     $remeveAccount = $con->prepare($remeveAccount_sql);
+     $remeveAccount = $conn->prepare($remeveAccount_sql);
      $remeveAccount->bindParam(':myid',$myid,PDO::PARAM_STR);
      $remeveAccount->execute();
      $remeveAccount_sql = "DELETE FROM saved WHERE user_saved_id= :myid";
-     $remeveAccount = $con->prepare($remeveAccount_sql);
+     $remeveAccount = $conn->prepare($remeveAccount_sql);
      $remeveAccount->bindParam(':myid',$myid,PDO::PARAM_STR);
      $remeveAccount->execute();
      $remeveAccount_sql = "DELETE FROM supportbox WHERE from_id= :myid";
-     $remeveAccount = $con->prepare($remeveAccount_sql);
+     $remeveAccount = $conn->prepare($remeveAccount_sql);
      $remeveAccount->bindParam(':myid',$myid,PDO::PARAM_STR);
      $remeveAccount->execute();
      header("location: login");

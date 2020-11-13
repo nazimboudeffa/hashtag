@@ -4,7 +4,7 @@ include "config/connect.php";
 // make user offline before logout
 $myid = $_SESSION['id'];
 $online_status = "0";
-$setStatus = $con->prepare("UPDATE users SET online = :online_status WHERE id = :myid");
+$setStatus = $conn->prepare("UPDATE signup SET online = :online_status WHERE id = :myid");
 $setStatus->bindParam(':online_status',$online_status,PDO::PARAM_INT);
 $setStatus->bindParam(':myid',$myid,PDO::PARAM_INT);
 $setStatus->execute();

@@ -1,12 +1,12 @@
 <?php
 error_reporting(E_ALL ^ E_NOTICE);
 session_start();
+if (!isset($global['systemRootPath'])) {
+    require_once '../config/config.php';
+};
 $myId = $_SESSION['id'];
 $myPhoto = $_SESSION['Userphoto'];
-if (!isset($config['SystemRootPath'])) {
-    include "../config/config.php";
-}
-include($config['SystemRootPath'] . "config/connect.php");
+include("../config/connect.php");
 include("../includes/fetch_users_info.php");
 include("../includes/time_function.php");
 include("../includes/country_name_function.php");
@@ -14,6 +14,7 @@ include("../includes/num_k_m_count.php");
 if(!isset($_SESSION['Username'])){
     header("location: ../index");
 }
+include($global['systemRootPath'] . "langs/set_lang.php");
 // ============[ This 'page' file is for other website pages as you can see in 'switch' ]==============
 $page = filter_var(htmlspecialchars(htmlentities($_GET['p'])) , FILTER_SANITIZE_STRING);
 switch ($page) {
@@ -54,7 +55,7 @@ case 'supportbox':
 		<div style="display: flex; max-width: 830px; margin: auto;text-align:<?php echo lang('textAlign'); ?>;">
 		<div style="width: 100%; margin: 0px 15px;">
 		<?php
-		$getReports = $con->prepare("SELECT * FROM supportbox WHERE from_id =:myId ORDER BY r_time DESC");
+		$getReports = $conn->prepare("SELECT * FROM supportbox WHERE from_id =:myId ORDER BY r_time DESC");
 		$getReports->bindParam(':myId',$myId,PDO::PARAM_INT);
 		$getReports->execute();
 		$countReports = $getReports->rowCount();
@@ -202,7 +203,7 @@ break;
 }
 ?>
 <!--=============================[ endJScodes ]========================================-->
-<?php include $config['SystemRootPath'] . "includes/end_js_codes.php"; ?>
+<?php include "../includes/endJScodes.php"; ?>
 <script type="text/javascript">
 function viewreport(r_id){
 $("#myReport_"+r_id).toggle();

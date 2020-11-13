@@ -1,9 +1,10 @@
 <?php
 session_start();
-if (!isset($config['SystemRootPath'])) {
-    include "../config/config.php";
-}
-include($config['SystemRootPath'] . "config/connect.php");
+if (!isset($global['systemRootPath'])) {
+    require_once '../config/config.php';
+};
+include($global['systemRootPath'] . "config/connect.php");
+include($global['systemRootPath'] . "langs/set_lang.php");
 session_start();
 $pid = filter_var(htmlspecialchars($_POST['pid']),FILTER_SANITIZE_NUMBER_INT);
 $myid = $_SESSION['id'];
@@ -13,7 +14,7 @@ $path = filter_var(htmlspecialchars($_POST['path']),FILTER_SANITIZE_STRING);
 $p_id = time()+rand(0,9999999);
 $p_privacy = "0";
 
-$createPost = $con->prepare("INSERT INTO posts
+$createPost = $conn->prepare("INSERT INTO wpost
 	(post_id,author_id,post_time,post_content,p_privacy,shared) VALUES
 	(:post_id, :p_author_id,:p_time, :p_content, :p_privacy, :shared)");
 $createPost->bindParam(':post_id',$p_id,PDO::PARAM_INT);
@@ -24,7 +25,7 @@ $createPost->bindParam(':p_privacy',$p_privacy,PDO::PARAM_INT);
 $createPost->bindParam(':shared',$pid,PDO::PARAM_STR);
 $createPost->execute();
 // send notification to user
-$get_post_authorId = $con->prepare("SELECT author_id FROM posts WHERE post_id=:pid");
+$get_post_authorId = $conn->prepare("SELECT author_id FROM wpost WHERE post_id=:pid");
 $get_post_authorId->bindParam(':pid',$pid,PDO::PARAM_INT);
 $get_post_authorId->execute();
 while ($getAuthor = $get_post_authorId->fetch(PDO::FETCH_ASSOC)) {
@@ -34,7 +35,7 @@ $notifyType = "share";
 $nSeen = "0";
 $nTime = time();
 if ($for_id != $myid) {
-$sendNotification = $con->prepare("INSERT INTO notifications (n_id, from_id, for_id, notifyType_id, notifyType, seen, time) VALUES (:nId, :fromId, :forId, :notifyTypeId, :notifyType, :seen, :nTime)");
+$sendNotification = $conn->prepare("INSERT INTO notifications (n_id, from_id, for_id, notifyType_id, notifyType, seen, time) VALUES (:nId, :fromId, :forId, :notifyTypeId, :notifyType, :seen, :nTime)");
 $sendNotification->bindParam(':nId',$nId,PDO::PARAM_INT);
 $sendNotification->bindParam(':fromId',$myid,PDO::PARAM_INT);
 $sendNotification->bindParam(':forId',$for_id,PDO::PARAM_INT);

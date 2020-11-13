@@ -1,20 +1,36 @@
 <?php
 error_reporting(E_ALL ^ E_NOTICE);
 session_start();
-if (!isset($config['SystemRootPath'])) {
-    include "config/config.php";
-}
-include "config/connect.php";
-include "includes/fetch_users_info.php";
-include "includes/time_function.php";
-include "includes/num_k_m_count.php";
-if (!isset($_SESSION['Username'])) {
+if (!isset($global['systemRootPath'])) {
+    require_once 'config/config.php';
+};
+include("config/connect.php");
+include("includes/fetch_users_info.php");
+include("includes/time_function.php");
+include("includes/num_k_m_count.php");
+include($global['systemRootPath'] . "langs/set_lang.php");
+if(!isset($_SESSION['Username'])){
     header("location: index");
 }
+
+// ================================ user verified badge style
+$verifyUser = "<span style='color: #03A9F4;' data-toggle='tooltip' data-placement='top' title='".lang('verified_page')."' class='fa fa-check-circle verifyUser'></span>";
+// ================================ check user if exist or not (for removed account).
+$usrSessID = $_SESSION['id'];
+$usrRemovedAcc = $conn->prepare("SELECT id FROM signup WHERE id=:usrSessID");
+$usrRemovedAcc->bindParam(':usrSessID',$usrSessID,PDO::PARAM_INT);
+$usrRemovedAcc->execute();
+$$usrRemovedAccCount = $usrRemovedAcc->rowCount();
+if (isset($usrSessID)) {
+	if($$usrRemovedAccCount < 1){
+		session_destroy();
+	}
+}
+
 ?>
 <html dir="<?php echo lang('html_dir'); ?>">
 <head>
-    <title>Home</title>
+    <title>Home | Hashtag</title>
     <meta charset="UTF-8">
     <meta name="description" content="Hashtag is a social network platform helps you meet new friends and stay connected with your family and with who you are interested anytime anywhere.">
     <meta name="keywords" content="social network,social media,Hashtag,meet,free platform">
@@ -22,7 +38,7 @@ if (!isset($_SESSION['Username'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <?php include "includes/head_imports_main.php"; ?>
 </head>
-<body onload="fetchPosts_DB('home');">
+<body onload="fetchHomePosts_DB();">
 <!--=============================[ NavBar ]========================================-->
 <?php include "includes/navbar_main.php"; ?>
 <!--=============================[ Div_Container ]========================================-->
@@ -36,26 +52,31 @@ if (!isset($_SESSION['Username'])) {
 <div align="center">
   <div align="center" class="userinfo_homeLinks">
   <a href="u/<?php echo $_SESSION['Username']; ?>">
-    <img src="<?php echo 'imgs/user_imgs/' . $_SESSION['Userphoto']; ?>">
+    <img src="<?php echo 'imgs/user_imgs/'.$_SESSION['Userphoto']; ?>">
   </a>
   </div>
-  <h3 style="margin:5px;font-size:18px;"><?php echo "<a href='u/" . $_SESSION['Username'] . "'>" . $_SESSION['Fullname'] . "</a>";
-if ($_SESSION['verify'] == "1") {
-    echo $verifyUser;
-} ?></h3>
-<p align="center">@<?php echo $_SESSION['Username']; ?></p>
-<?php
-echo "<span style='cursor:pointer;width:95%;display:inline-flex;margin:5px;'><a href='settings?tc=edit_profile' class=\"silver_flat_btn\" style='width:100%;'><span class=\"fa fa-cog\"></span> " . lang('edit_profile') . "</a></span>";
-?>
-</div>
-<a href="./u/<?php echo $_SESSION['Username']; ?>&ut=photos"><p class="<?php echo lang('HLP_b'); ?>"><img src="imgs/main_icons/1f5fb.png" /> <?php echo lang('my_photos'); ?></p></a>
-<a href="posts/saved"><p class="<?php echo lang('HLP_b'); ?>"><img src="imgs/main_icons/1f516.png" /> <?php echo lang('saved_posts'); ?></p></a>
-<!-- START PLUGINS -->
+  <div align="center"><a href="u/<?php echo $_SESSION['Username']; ?>" style="text-decoration: underline blue;">@<?php echo $_SESSION['Username'];?></a> <span style="margin:5px;font-size:18px;">(<?php echo "<a href='u/".$_SESSION['Username']."'>".$_SESSION['Fullname']."</a>"; if ($_SESSION['verify'] == "1"){echo $verifyUser;} ?>)</span></div>
 
-<!-- END PLUGINS -->
+</div>
+
+<p class="homeLinks_title">MES ACTIVITES</p>
+<a href="./u/<?php echo $_SESSION['Username']; ?>&ut=photos"><p class="<?php echo lang('HLP_b'); ?>"><img src="imgs/main_icons/1f5fb.png" /> <?php echo lang('my_photos'); ?></p></a>
+<a href="./posts/saved"><p class="<?php echo lang('HLP_b'); ?>"><img src="imgs/main_icons/1f516.png" /> <?php echo lang('saved_posts'); ?></p></a>
+
+<!-- PLUGINS -->
+<?php
+require_once "./plugins/plugins.php";
+$plugins = new Plugin();
+//echo $plugins->addMenu();
+?>
+<p class="homeLinks_title">MES JEUX</p>
+<a href="./plugins/games/games.php"><p class="<?php echo lang('HLP_b'); ?>"><img src="imgs/main_icons/PHASER.png" />PhaserJS</p></a>
+
+<!-- END PLUGIN -->
+
 <p class="homeLinks_title"><?php echo lang('more'); ?></p>
-<a href="page/supportbox"><p class="<?php echo lang('HLP_b'); ?>"><img src="imgs/main_icons/1f4e5.png" /> <?php echo lang('supportBox'); ?></p></a>
-<a href="page/report"><p class="<?php echo lang('HLP_b'); ?>"><img src="imgs/main_icons/1f4e4.png" /> <?php echo lang('Report_A_Problem'); ?></p></a>
+<a href="page/supportbox"><p class="<?php echo lang('HLP_b'); ?>"><img src="imgs/main_icons/woodhouse.png" /> <?php echo lang('supportBox'); ?></p></a>
+<a href="page/report"><p class="<?php echo lang('HLP_b'); ?>"><img src="imgs/main_icons/owl.png" /> <?php echo lang('Report_A_Problem'); ?></p></a>
     </div>
         </div>
     </div>
@@ -64,16 +85,16 @@ echo "<span style='cursor:pointer;width:95%;display:inline-flex;margin:5px;'><a 
         <div align="left">
             <div class="centerCol_2">
             <?php
-$uid = $_SESSION['id'];
-$sqlQ = "SELECT aSetup FROM users WHERE id=:uid";
-$sqlQ_check = $con->prepare($sqlQ);
-$sqlQ_check->bindParam(':uid', $uid, PDO::PARAM_INT);
-$sqlQ_check->execute();
-while ($aSetupDB = $sqlQ_check->fetch(PDO::FETCH_ASSOC)) {
-    $aSetupFromDb = $aSetupDB['aSetup'];
-}
-if ($aSetupFromDb != 100) {
-?>
+            $uid = $_SESSION['id'];
+            $sqlQ = "SELECT aSetup FROM signup WHERE id=:uid";
+            $sqlQ_check = $conn->prepare($sqlQ);
+            $sqlQ_check->bindParam(':uid',$uid,PDO::PARAM_INT);
+            $sqlQ_check->execute();
+            while ($aSetupDB = $sqlQ_check->fetch(PDO::FETCH_ASSOC)) {
+                $aSetupFromDb = $aSetupDB['aSetup'];
+            }
+            if ($aSetupFromDb != 100) {
+            ?>
             <div id="AccountSetup">
             <div class="post">
                 <p style="padding: 8px; color: #03A9F4; font-size: 16px; border-bottom: 1px solid #ececec; margin: 10 15;text-align:<?php echo lang('textAlign') ?>;"><?php echo lang('accountSetup') ?></p>
@@ -81,123 +102,117 @@ if ($aSetupFromDb != 100) {
                 <div class="aSetup" align="center">
                     <div class="aSetup_item">
                         <?php
-    $aSetupVal = array();
-    if (empty($_SESSION['Userphoto']) or $_SESSION['Userphoto'] == "user-male.png" or $_SESSION['Userphoto'] == "user-female.png") {
-        $cUphotoClass = "aSetup_item_empty";
-        $cUphotoColor = "color: #c3c3c3;";
-    } else {
-        $cUphotoClass = "aSetup_item_done";
-        $cUphotoColor = "color: #4bd37b;";
-        if (!in_array('Userphoto', $aSetupVal)) {
-            array_push($aSetupVal, 'Userphoto');
-        }
-    } ?>
+                        $aSetupVal = array();
+                        if(empty($_SESSION['Userphoto']) or $_SESSION['Userphoto'] == "user-male.png" or $_SESSION['Userphoto'] == "user-female.png"){
+                            $cUphotoClass = "aSetup_item_empty";
+                            $cUphotoColor = "color: #c3c3c3;";
+                        }else{
+                            $cUphotoClass = "aSetup_item_done";
+                            $cUphotoColor = "color: #4bd37b;";
+                            if (!in_array('Userphoto', $aSetupVal)) {
+                                array_push($aSetupVal,'Userphoto');
+                            }
+                        } ?>
                         <div class="<?php echo $cUphotoClass; ?>"></div>
                         <p style="<?php echo $cUphotoColor; ?>"><?php echo lang('as_userPhoto') ?></p>
-                        <?php if (!in_array('Userphoto', $aSetupVal)) { ?><a href="u/<?php echo $_SESSION['Username'] ?>"><?php echo lang('complete') ?></a><?php
-    } ?>
+                        <?php if(!in_array('Userphoto', $aSetupVal)){ ?><a href="u/<?php echo $_SESSION['Username'] ?>"><?php echo lang('complete') ?></a><?php } ?>
                     </div>
                     <div class="aSetup_item">
-                        <?php if (empty($_SESSION['uCoverPhoto'])) {
-        $cCphotoClass = "aSetup_item_empty";
-        $cCphotoColor = "color: #c3c3c3;";
-    } else {
-        $cCphotoClass = "aSetup_item_done";
-        $cCphotoColor = "color: #4bd37b;";
-        if (!in_array('uCoverPhoto', $aSetupVal)) {
-            array_push($aSetupVal, 'uCoverPhoto');
-        }
-    } ?>
+                        <?php if(empty($_SESSION['uCoverPhoto'])){
+                            $cCphotoClass = "aSetup_item_empty";
+                            $cCphotoColor = "color: #c3c3c3;";
+                        }else{
+                            $cCphotoClass = "aSetup_item_done";
+                            $cCphotoColor = "color: #4bd37b;";
+                            if (!in_array('uCoverPhoto', $aSetupVal)) {
+                                array_push($aSetupVal,'uCoverPhoto');
+                            }
+                        } ?>
                         <div class="<?php echo $cCphotoClass; ?>"></div>
                         <p style="<?php echo $cCphotoColor; ?>"><?php echo lang('as_coverPhoto') ?></p>
-                        <?php if (!in_array('uCoverPhoto', $aSetupVal)) { ?><a href="u/<?php echo $_SESSION['Username'] ?>"><?php echo lang('complete') ?></a><?php
-    } ?>
+                        <?php if(!in_array('uCoverPhoto', $aSetupVal)){ ?><a href="u/<?php echo $_SESSION['Username'] ?>"><?php echo lang('complete') ?></a><?php } ?>
                     </div>
                     <div class="aSetup_item">
-                        <?php if (empty($_SESSION['school']) or empty($_SESSION['work0']) or empty($_SESSION['work']) or empty($_SESSION['country']) or empty($_SESSION['website']) or empty($_SESSION['bio']) or empty($_SESSION['birthday'])) {
-        $cInfoClass = "aSetup_item_empty";
-        $cInfoColor = "color: #c3c3c3;";
-    } else {
-        $cInfoClass = "aSetup_item_done";
-        $cInfoColor = "color: #4bd37b;";
-        if (!in_array('CompleteInfo', $aSetupVal)) {
-            array_push($aSetupVal, 'CompleteInfo');
-        }
-    } ?>
+                        <?php if(empty($_SESSION['school']) or empty($_SESSION['work0']) or empty($_SESSION['work']) or empty($_SESSION['country']) or empty($_SESSION['website']) or empty($_SESSION['bio']) or empty($_SESSION['birthday'])){
+                            $cInfoClass = "aSetup_item_empty";
+                            $cInfoColor = "color: #c3c3c3;";
+                        }else{
+                            $cInfoClass = "aSetup_item_done";
+                            $cInfoColor = "color: #4bd37b;";
+                            if (!in_array('CompleteInfo', $aSetupVal)) {
+                                array_push($aSetupVal,'CompleteInfo');
+                            }
+                        } ?>
                         <div class="<?php echo $cInfoClass; ?>"></div>
                         <p style="<?php echo $cInfoColor; ?>"><?php echo lang('as_profileInfo') ?></p>
-                        <?php if (!in_array('CompleteInfo', $aSetupVal)) { ?><a href="settings?tc=edit_profile"><?php echo lang('complete') ?></a><?php
-    } ?>
+                        <?php if(!in_array('CompleteInfo', $aSetupVal)){ ?><a href="settings?tc=edit_profile"><?php echo lang('complete') ?></a><?php } ?>
                     </div>
                     <div class="aSetup_item">
                         <?php
-    $uid = $_SESSION['id'];
-    $sqlQ = "SELECT * FROM follow WHERE uf_one = :uid";
-    $sqlQ_check = $con->prepare($sqlQ);
-    $sqlQ_check->bindParam(':uid', $uid, PDO::PARAM_INT);
-    $sqlQ_check->execute();
-    $sqlQ_checkCount = $sqlQ_check->rowCount();
-    if ($sqlQ_checkCount > 0) {
-        $cFollowClass = "aSetup_item_done";
-        $cFollowColor = "color: #4bd37b;";
-        if (!in_array('followPeople', $aSetupVal)) {
-            array_push($aSetupVal, 'followPeople');
-        }
-    } else {
-        $cFollowClass = "aSetup_item_empty";
-        $cFollowColor = "color: #c3c3c3;";
-    }
-?>
+                        $uid = $_SESSION['id'];
+                        $sqlQ = "SELECT * FROM follow WHERE uf_one = :uid";
+                        $sqlQ_check = $conn->prepare($sqlQ);
+                        $sqlQ_check->bindParam(':uid',$uid,PDO::PARAM_INT);
+                        $sqlQ_check->execute();
+                        $sqlQ_checkCount = $sqlQ_check->rowCount();
+                        if ($sqlQ_checkCount > 0) {
+                            $cFollowClass = "aSetup_item_done";
+                            $cFollowColor = "color: #4bd37b;";
+                            if (!in_array('followPeople', $aSetupVal)) {
+                                array_push($aSetupVal,'followPeople');
+                            }
+                        }else{
+                            $cFollowClass = "aSetup_item_empty";
+                            $cFollowColor = "color: #c3c3c3;";
+                        }
+                        ?>
                         <div class="<?php echo $cFollowClass; ?>"></div>
                         <p style="<?php echo $cFollowColor; ?>"><?php echo lang('as_followPeople') ?></p>
-                        <?php if (!in_array('followPeople', $aSetupVal)) { ?><a href="search"><?php echo lang('complete') ?></a><?php
-    } ?>
+                        <?php if(!in_array('followPeople', $aSetupVal)){ ?><a href="search"><?php echo lang('complete') ?></a><?php } ?>
                     </div>
                 </div>
                 <div class="aSetup_progrDiv" style="text-align: <?php echo lang('textAlign'); ?>">
                 <?php
-    $aSetupVal = count($aSetupVal);
-    switch ($aSetupVal) {
-        case '1':
-            $aSetupProg = "25";
-        break;
-        case '2':
-            $aSetupProg = "50";
-        break;
-        case '3':
-            $aSetupProg = "75";
-        break;
-        case '4':
-            $aSetupProg = "100";
-        break;
-        default:
-            $aSetupProg = "0";
-        break;
-    }
-?>
-                    <p style="width: <?php echo $aSetupProg; ?>%;"><?php if ($aSetupProg > 0) {
-        echo $aSetupProg . '%';
-    } ?></p>
+                $aSetupVal = count($aSetupVal);
+                switch ($aSetupVal) {
+                    case '1':
+                        $aSetupProg = "25";
+                    break;
+                    case '2':
+                        $aSetupProg = "50";
+                    break;
+                    case '3':
+                        $aSetupProg = "75";
+                    break;
+                    case '4':
+                        $aSetupProg = "100";
+                    break;
+                    default:
+                        $aSetupProg = "0";
+                    break;
+                }
+                ?>
+                    <p style="width: <?php echo $aSetupProg; ?>%;"><?php if($aSetupProg > 0){echo $aSetupProg.'%';} ?></p>
                 </div>
 
                 </div>
             </div>
             <?php
-    if ($aSetupProg == 100) {
-        $uid = $_SESSION['id'];
-        $sqlQ = "UPDATE users SET aSetup = :aSetupProg WHERE id = :uid";
-        $sqlQ_check = $con->prepare($sqlQ);
-        $sqlQ_check->bindParam(':aSetupProg', $aSetupProg, PDO::PARAM_INT);
-        $sqlQ_check->bindParam(':uid', $uid, PDO::PARAM_INT);
-        $sqlQ_check->execute();
-        echo "<script>$('#AccountSetup').html('');</script>";
-    }
-}
-?>
+            if ($aSetupProg == 100 ) {
+                $uid = $_SESSION['id'];
+                $sqlQ = "UPDATE signup SET aSetup = :aSetupProg WHERE id = :uid";
+                $sqlQ_check = $conn->prepare($sqlQ);
+                $sqlQ_check->bindParam(':aSetupProg',$aSetupProg,PDO::PARAM_INT);
+                $sqlQ_check->bindParam(':uid',$uid,PDO::PARAM_INT);
+                $sqlQ_check->execute();
+                echo "<script>$('#AccountSetup').html('');</script>";
+            }
+            }
+            ?>
             <!--==========[ End Account Setup ]=========-->
                 <div class="write_post">
                 <?php echo $err_success_Msg; ?>
-                    <?php include ("includes/w_post_form.php"); ?>
+                    <?php include("includes/w_post_form.php"); ?>
                 </div>
                    <div id="FetchingPostsDiv">
                 </div>
@@ -222,7 +237,7 @@ if ($aSetupFromDb != 100) {
                   <p style="color: #b1b1b1;text-align: center;padding: 15px;margin: 0px;font-size: 18px;"><?php echo lang('noMoreStories'); ?></p>
                 </div>
                 <div class="post  loading-info" id="LoadMorePostsBtn" style="display: none;">
-                  <button class="blue_flat_btn" style="width: 100%" onclick="fetchPosts_DB('home')"><?php echo lang('load_more'); ?></button>
+                  <button class="blue_flat_btn" style="width: 100%" onclick="fetchHomePosts_DB()"><?php echo lang('load_more'); ?></button>
                 </div>
                 <input type="hidden" id="GetLimitOfPosts" value="0">
         </div>
@@ -284,6 +299,25 @@ $("#trPosts").show();
 $("#trPages").hide();
 });
 </script>
-<?php include "includes/end_js_codes.php"; ?>
+<?php include "includes/endJScodes.php"; ?>
+<!-- Facebook Pixel Code -->
+
+<script>
+  !function(f,b,e,v,n,t,s)
+  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+  n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];
+  s.parentNode.insertBefore(t,s)}(window, document,'script',
+  'https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init', '791312467962980');
+  fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+  src="https://www.facebook.com/tr?id=791312467962980&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Facebook Pixel Code -->
+
 </body>
 </html>

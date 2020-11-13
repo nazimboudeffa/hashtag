@@ -2,10 +2,7 @@
 // start session
 session_start();
 // include irequired files
-if (!isset($config['SystemRootPath'])) {
-    include "../config/config.php";
-}
-include($config['SystemRootPath'] . "config/connect.php");
+include("../config/connect.php");
 include ("time_function.php");
 // main varaibles
 $myid = $_SESSION['id'];
@@ -16,14 +13,14 @@ switch ($req) {
 // =================== if ajax requested [getUsers] do this code ===================
 case 'getUsers':
 // select users that I follow
-$users = $con->prepare("SELECT uf_two FROM follow WHERE uf_one=:myid");
+$users = $conn->prepare("SELECT uf_two FROM follow WHERE uf_one=:myid");
 $users->bindParam(':myid',$myid,PDO::PARAM_INT);
 $users->execute();
 $usersCount = $users->rowCount();
 if ($usersCount > 0) {
 while ($uf = $users->fetch(PDO::FETCH_ASSOC)) {
 $uf_two = $uf['uf_two'];
-$usersInfo = $con->prepare("SELECT id,online,Fullname,Userphoto,Username,verify FROM users WHERE id=:uf_two");
+$usersInfo = $conn->prepare("SELECT id,online,Fullname,Userphoto,Username,verify FROM signup WHERE id=:uf_two");
 $usersInfo->bindParam(':uf_two',$uf_two,PDO::PARAM_INT);
 $usersInfo->execute();
 
@@ -36,7 +33,7 @@ if ($uRows['online'] == "1") {
 }
 // get last msg as hint
 $uid = $uRows['id'];
-$getHint = $con->prepare("SELECT message,m_from FROM messages WHERE (m_from = :myid AND m_to = :uid) OR (m_from = :uid AND m_to = :myid) ORDER BY m_time DESC LIMIT 1");
+$getHint = $conn->prepare("SELECT message,m_from FROM messages WHERE (m_from = :myid AND m_to = :uid) OR (m_from = :uid AND m_to = :myid) ORDER BY m_time DESC LIMIT 1");
 $getHint->bindParam(':myid',$myid,PDO::PARAM_INT);
 $getHint->bindParam(':uid',$uid,PDO::PARAM_INT);
 $getHint->execute();
@@ -65,7 +62,7 @@ if ($uRows['verify'] == "1"){
 // count unseen messages
 $uid = $uRows['id'];
 $seen = "0";
-$seenCount = $con->prepare("SELECT message FROM messages WHERE (m_from=:uid AND m_to=:myid) AND m_seen = :seen");
+$seenCount = $conn->prepare("SELECT message FROM messages WHERE (m_from=:uid AND m_to=:myid) AND m_seen = :seen");
 $seenCount->bindParam(':myid',$myid,PDO::PARAM_INT);
 $seenCount->bindParam(':uid',$uid,PDO::PARAM_INT);
 $seenCount->bindParam(':seen',$seen,PDO::PARAM_INT);
@@ -91,17 +88,17 @@ echo "
 		</td>
 	</tr>
 </table>
-";
+";	
 }
 }
 }else{
-	 echo "";
+	echo "";
 }
 break;
 // =================== if ajax requested [getUsers2] do this code ===================
 case 'getUsers2':
 // select users that they sent to me messages and/or they follow me
-$users2 = $con->prepare("SELECT count(id),m_from FROM messages WHERE m_to=:myid GROUP BY m_from");
+$users2 = $conn->prepare("SELECT count(id),m_from FROM messages WHERE m_to=:myid GROUP BY m_from");
 $users2->bindParam(':myid',$myid,PDO::PARAM_INT);
 $users2->execute();
 $users2Count = $users2->rowCount();
@@ -109,7 +106,7 @@ if ($users2Count > 0) {
 while ($uf2 = $users2->fetch(PDO::FETCH_ASSOC)) {
 // get id of [users] and [users2] queries
 $m_from = $uf2['m_from'];
-$usersInfo = $con->prepare("SELECT id,online,Fullname,Userphoto,Username,verify FROM users WHERE id=:m_from");
+$usersInfo = $conn->prepare("SELECT id,online,Fullname,Userphoto,Username,verify FROM signup WHERE id=:m_from");
 $usersInfo->bindParam(':m_from',$m_from,PDO::PARAM_INT);
 $usersInfo->execute();
 while ($uRows = $usersInfo->fetch(PDO::FETCH_ASSOC)) {
@@ -121,7 +118,7 @@ if ($uRows['online'] == "1") {
 }
 // get last msg as hint
 $uid = $uRows['id'];
-$getHint = $con->prepare("SELECT message,m_from FROM messages WHERE (m_from = :myid AND m_to = :uid) OR (m_from = :uid AND m_to = :myid) ORDER BY m_time DESC LIMIT 1");
+$getHint = $conn->prepare("SELECT message,m_from FROM messages WHERE (m_from = :myid AND m_to = :uid) OR (m_from = :uid AND m_to = :myid) ORDER BY m_time DESC LIMIT 1");
 $getHint->bindParam(':myid',$myid,PDO::PARAM_INT);
 $getHint->bindParam(':uid',$uid,PDO::PARAM_INT);
 $getHint->execute();
@@ -150,7 +147,7 @@ if ($uRows['verify'] == "1"){
 // count unseen messages
 $uid = $uRows['id'];
 $seen = "0";
-$seenCount = $con->prepare("SELECT message FROM messages WHERE (m_from=:uid AND m_to=:myid) AND m_seen = :seen");
+$seenCount = $conn->prepare("SELECT message FROM messages WHERE (m_from=:uid AND m_to=:myid) AND m_seen = :seen");
 $seenCount->bindParam(':myid',$myid,PDO::PARAM_INT);
 $seenCount->bindParam(':uid',$uid,PDO::PARAM_INT);
 $seenCount->bindParam(':seen',$seen,PDO::PARAM_INT);
@@ -162,7 +159,7 @@ if ($seenCountNum > 0) {
 	$mCountUnseen = "";
 }
 // check if user who requested a message is one of my friends or not
-$uReqCheck = $con->prepare("SELECT uf_two FROM follow WHERE uf_one=:myid AND uf_two = :m_from");
+$uReqCheck = $conn->prepare("SELECT uf_two FROM follow WHERE uf_one=:myid AND uf_two = :m_from");
 $uReqCheck->bindParam(':myid',$myid,PDO::PARAM_INT);
 $uReqCheck->bindParam(':m_from',$m_from,PDO::PARAM_INT);
 $uReqCheck->execute();
@@ -183,7 +180,7 @@ echo "
 		</td>
 	</tr>
 </table>
-";
+";	
 }
 }
 }
@@ -195,7 +192,7 @@ break;
 case 'searchUser':
 // search in users that I follow
 $mSearch = filter_var(htmlentities($_POST['mSearch']),FILTER_SANITIZE_STRING);
-$uSearch = $con->prepare("SELECT id,online,Fullname,Userphoto,Username,verify FROM users WHERE id IN (SELECT uf_two FROM follow WHERE uf_one= ?) AND (Fullname LIKE ? OR Username LIKE ?)");
+$uSearch = $conn->prepare("SELECT id,online,Fullname,Userphoto,Username,verify FROM signup WHERE id IN (SELECT uf_two FROM follow WHERE uf_one= ?) AND (Fullname LIKE ? OR Username LIKE ?)");
 $params = array("$myid","$mSearch%","$mSearch%");
 $uSearch->execute($params);
 $uSearchCount = $uSearch->rowCount();
@@ -238,7 +235,7 @@ break;
 case 'userProfile':
 // get [user info] that I selected from contacts
 $uid = filter_var(htmlentities($_POST['uid']),FILTER_SANITIZE_NUMBER_INT);
-$getInfo = $con->prepare("SELECT Username,Fullname,Userphoto,online,bio,verify FROM users WHERE id=:uid");
+$getInfo = $conn->prepare("SELECT Username,Fullname,Userphoto,online,bio,verify FROM signup WHERE id=:uid");
 $getInfo->bindParam(':uid',$uid,PDO::PARAM_INT);
 $getInfo->execute();
 while ($getInfo_row = $getInfo->fetch(PDO::FETCH_ASSOC)) {
@@ -289,13 +286,13 @@ case 'fetchMsgs':
 $uid = filter_var(htmlentities($_POST['uid']),FILTER_SANITIZE_NUMBER_INT);
 // m_seen set to seen
 $seen = "1";
-$seenUpdate = $con->prepare("UPDATE messages SET m_seen = :seen WHERE m_from=:uid AND m_to=:myid");
+$seenUpdate = $conn->prepare("UPDATE messages SET m_seen = :seen WHERE m_from=:uid AND m_to=:myid");
 $seenUpdate->bindParam(':seen',$seen,PDO::PARAM_INT);
 $seenUpdate->bindParam(':myid',$myid,PDO::PARAM_INT);
 $seenUpdate->bindParam(':uid',$uid,PDO::PARAM_INT);
 $seenUpdate->execute();
 // select messages and fetch
-$getMsgs = $con->prepare("SELECT * FROM messages WHERE (m_from = :myid AND m_to = :uid) OR (m_from = :uid AND m_to = :myid)");
+$getMsgs = $conn->prepare("SELECT * FROM messages WHERE (m_from = :myid AND m_to = :uid) OR (m_from = :uid AND m_to = :myid)");
 $getMsgs->bindParam(':myid',$myid,PDO::PARAM_INT);
 $getMsgs->bindParam(':uid',$uid,PDO::PARAM_INT);
 $getMsgs->execute();
@@ -303,7 +300,7 @@ $getMsgsCout = $getMsgs->rowCount();
 // if selected messages more than zero [0] do this, If not >> do [else] code
 if ($getMsgsCout > 0) {
 while ($msgs_row = $getMsgs->fetch(PDO::FETCH_ASSOC)) {
-	$toUserQuery = $con->prepare("SELECT Userphoto FROM users WHERE id = :uid");
+	$toUserQuery = $conn->prepare("SELECT Userphoto FROM signup WHERE id = :uid");
 	$toUserQuery->bindParam(':uid',$uid,PDO::PARAM_INT);
 	$toUserQuery->execute();
 	// get msg user into
@@ -322,7 +319,7 @@ if ($msgs_row['m_from'] == $myid) {
 }
 // set time variable
 $mTime = time_ago($msgs_row['m_time']);
-//setting up message
+//setting up message 
 $em_img_path = $path."imgs/emoticons/";
 include ("emoticons.php");
 $message_body = str_replace($em_char,$em_img,$msgs_row['message']);
@@ -362,7 +359,7 @@ $mid = rand(0,999999999)+time();
 $mTime = time();
 $mSeen="0";
 // send message to database
-$insertM = $con->prepare("INSERT INTO messages (m_id,message,m_from,m_to,m_time,m_seen) VALUES (:mid,:msg,:myid,:uid,:mTime,:mSeen)");
+$insertM = $conn->prepare("INSERT INTO messages (m_id,message,m_from,m_to,m_time,m_seen) VALUES (:mid,:msg,:myid,:uid,:mTime,:mSeen)");
 $insertM->bindParam(':mid',$mid,PDO::PARAM_INT);
 $insertM->bindParam(':msg',$msg,PDO::PARAM_STR);
 $insertM->bindParam(':myid',$myid,PDO::PARAM_INT);
@@ -380,7 +377,7 @@ break;
 case 'checkSeen':
 $uid = filter_var(htmlentities($_POST['uid']),FILTER_SANITIZE_NUMBER_INT);
 // set messages of user [uid] above as [seen]
-$seenCheck = $con->prepare("SELECT m_seen,m_to FROM messages WHERE (m_from = :myid AND m_to = :uid) OR (m_from = :uid AND m_to = :myid) ORDER BY m_time DESC LIMIT 1");
+$seenCheck = $conn->prepare("SELECT m_seen,m_to FROM messages WHERE (m_from = :myid AND m_to = :uid) OR (m_from = :uid AND m_to = :myid) ORDER BY m_time DESC LIMIT 1");
 $seenCheck->bindParam(':myid',$myid,PDO::PARAM_INT);
 $seenCheck->bindParam(':uid',$uid,PDO::PARAM_INT);
 $seenCheck->execute();
@@ -397,7 +394,7 @@ break;
 // =================== if ajax requested [checkUnseenMsgs] do this code ===================
 case 'checkUnseenMsgs':
 $seen = "0";
-$seenCount = $con->prepare("SELECT message FROM messages WHERE m_to=:myid AND m_seen = :seen");
+$seenCount = $conn->prepare("SELECT message FROM messages WHERE m_to=:myid AND m_seen = :seen");
 $seenCount->bindParam(':myid',$myid,PDO::PARAM_INT);
 $seenCount->bindParam(':seen',$seen,PDO::PARAM_INT);
 $seenCount->execute();
@@ -406,12 +403,12 @@ if ($seenCountNum > 0) {
 	echo "<span class='redAlert_notify_msgs'>$seenCountNum</span>";
 }else{
 	echo "";
-}
+}	
 break;
 // =================== if ajax requested [checkTyping] do this code ===================
 case 'checkTyping':
 $uid = filter_var(htmlentities($_POST['uid']),FILTER_SANITIZE_NUMBER_INT);
-$typing = $con->prepare("SELECT t_from FROM typing_m WHERE t_from=:uid AND t_to = :myid");
+$typing = $conn->prepare("SELECT t_from FROM typing_m WHERE t_from=:uid AND t_to = :myid");
 $typing->bindParam(':uid',$uid,PDO::PARAM_INT);
 $typing->bindParam(':myid',$myid,PDO::PARAM_INT);
 $typing->execute();
@@ -421,13 +418,13 @@ break;
 // =================== if ajax requested [mTyping] do this code ===================
 case 'mTyping':
 $uid = filter_var(htmlentities($_POST['uid']),FILTER_SANITIZE_NUMBER_INT);
-$typingExist = $con->prepare("SELECT t_from FROM typing_m WHERE t_from=:myid AND t_to = :uid");
+$typingExist = $conn->prepare("SELECT t_from FROM typing_m WHERE t_from=:myid AND t_to = :uid");
 $typingExist->bindParam(':uid',$uid,PDO::PARAM_INT);
 $typingExist->bindParam(':myid',$myid,PDO::PARAM_INT);
 $typingExist->execute();
 $typingExistCount = $typingExist->rowCount();
 if ($typingExistCount < 1) {
-$setTyping = $con->prepare("INSERT INTO typing_m (t_from,t_to) VALUES (:myid,:uid)");
+$setTyping = $conn->prepare("INSERT INTO typing_m (t_from,t_to) VALUES (:myid,:uid)");
 $setTyping->bindParam(':uid',$uid,PDO::PARAM_INT);
 $setTyping->bindParam(':myid',$myid,PDO::PARAM_INT);
 $setTyping->execute();
@@ -438,7 +435,7 @@ break;
 // =================== if ajax requested [mUnTyping] do this code ===================
 case 'mUnTyping':
 $uid = filter_var(htmlentities($_POST['uid']),FILTER_SANITIZE_NUMBER_INT);
-$unTyping = $con->prepare("DELETE FROM typing_m WHERE t_from=:myid AND t_to = :uid");
+$unTyping = $conn->prepare("DELETE FROM typing_m WHERE t_from=:myid AND t_to = :uid");
 $unTyping->bindParam(':uid',$uid,PDO::PARAM_INT);
 $unTyping->bindParam(':myid',$myid,PDO::PARAM_INT);
 $unTyping->execute();

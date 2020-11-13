@@ -1,9 +1,10 @@
 <?php
 session_start();
-if (!isset($config['SystemRootPath'])) {
-    include "../config/config.php";
-}
-include($config['SystemRootPath'] . "config/connect.php");
+if (!isset($global['systemRootPath'])) {
+    require_once '../config/config.php';
+};
+include($global['systemRootPath'] . "config/connect.php");
+include($global['systemRootPath'] . "langs/set_lang.php");
 include("time_function.php");
 $comment_id = htmlentities($_POST['cid'], ENT_QUOTES);
 $edit_commant_var = htmlentities($_POST['cContent'], ENT_QUOTES);
@@ -12,7 +13,7 @@ $timeEdited = time();
 $edited = "1";
 
 $commentEdit_sql = "UPDATE comments SET c_content= :edit_commant_var , c_edited= :edited , c_time_edited= :timeEdited WHERE c_id= :comment_id";
-$commentEdit = $con->prepare($commentEdit_sql);
+$commentEdit = $conn->prepare($commentEdit_sql);
 $commentEdit->bindParam(':edit_commant_var',$edit_commant_var,PDO::PARAM_STR);
 $commentEdit->bindParam(':edited',$edited,PDO::PARAM_INT);
 $commentEdit->bindParam(':timeEdited',$timeEdited,PDO::PARAM_STR);

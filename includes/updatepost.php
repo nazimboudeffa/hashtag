@@ -1,8 +1,9 @@
 <?php
-if (!isset($config['SystemRootPath'])) {
-    include "../config/config.php";
-}
-include($config['SystemRootPath'] . "config/connect.php");
+if (!isset($global['systemRootPath'])) {
+    require_once '../config/config.php';
+};
+include($global['systemRootPath'] . "config/connect.php");
+include($global['systemRootPath'] . "langs/set_lang.php");
 // ================= recive data from ajax data ======================================
 $posts_id = htmlspecialchars($_POST['pid']);
 $edit_post_var = trim(htmlspecialchars($_POST['pc']));
@@ -21,8 +22,8 @@ case lang('wpr_onlyme'):
     break;
 }
 // ================= PDO sql query ===================================================
-$edit_post_sql = "UPDATE posts SET post_content= :edit_post_var,p_title = :edit_post_title,p_privacy = :p_privacy WHERE post_id= :posts_id";
-$edit_post = $con->prepare($edit_post_sql);
+$edit_post_sql = "UPDATE wpost SET post_content= :edit_post_var,p_title = :edit_post_title,p_privacy = :p_privacy WHERE post_id= :posts_id";
+$edit_post = $conn->prepare($edit_post_sql);
 $edit_post->bindParam(':edit_post_var',$edit_post_var,PDO::PARAM_STR);
 $edit_post->bindParam(':edit_post_title',$edit_post_title,PDO::PARAM_STR);
 $edit_post->bindParam(':p_privacy',$p_privacy,PDO::PARAM_INT);

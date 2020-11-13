@@ -1,17 +1,17 @@
 <?php
 switch ($_SESSION['language']) {
 case 'french':
-	include_once "french.php";
-break;
+	include_once $global['systemRootPath'] . "langs/french.php";
+	break;
 case 'english':
-	include_once "english.php";
-break;
+	include_once $global['systemRootPath'] . "langs/english.php";
+	break;
 case 'arabic':
-	include_once "arabic.php";
-break;
+	include_once $global['systemRootPath'] . "langs/arabic.php";
+	break;
 default:
-	$_SESSION['language'] = "English";
-	include_once "english.php";
-break;
+	$_SESSION['language'] = "french";
+	include_once $global['systemRootPath'] . "langs/french.php";
+	break;
 }
 ?>

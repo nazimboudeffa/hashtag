@@ -3,12 +3,13 @@ $s_id = $_SESSION['id'];
 $s_fullname = $_SESSION['Fullname'];
 $s_username = $_SESSION['Username'];
 $s_userphoto = $_SESSION['Userphoto'];
-$un = filter_var(htmlspecialchars($_GET['u']), FILTER_SANITIZE_STRING);
-$uisql = "SELECT * FROM users WHERE Username=:un";
-$que = $con->prepare($uisql);
+
+$un = filter_var(htmlspecialchars($_GET['u']),FILTER_SANITIZE_STRING);
+$uisql = "SELECT * FROM signup WHERE Username=:un";
+$que = $conn->prepare($uisql);
 $que->bindParam(':un', $un, PDO::PARAM_STR);
 $que->execute();
-while ($row = $que->fetch(PDO::FETCH_ASSOC)) {
+while($row = $que->fetch(PDO::FETCH_ASSOC)){
     $row_id = $row['id'];
     $row_fullname = $row['Fullname'];
     $row_username = $row['Username'];

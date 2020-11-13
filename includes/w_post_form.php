@@ -19,113 +19,116 @@
     bottom: 0;
     }
 </style>
-
+<?php
+if (!isset($global['systemRootPath'])) {
+    require_once '../config/config.php';
+};
+include($global['systemRootPath'] . "config/connect.php");
+include($global['systemRootPath'] . "langs/set_lang.php");
+?>
 <div class="post" style="text-align:<?php echo lang('w_post_align'); ?>;direction: <?php echo lang('w_post_dir'); ?>">
 <table class="WritePostUserI">
 <tr>
 <td style='width:50px;'>
-<div class='username_OF_postImg'><img src="<?php echo $config['WebSiteRootURL']; ?>imgs/user_imgs/<?php echo $_SESSION['Userphoto']; ?>"></div>
+<div class='username_OF_postImg'><img src="<?php echo $global['webSiteRootURL']; ?>imgs/user_imgs/<?php echo $_SESSION['Userphoto']; ?>"></div>
 </td>
 <td style="padding: 10px 0px">
-<a href="<?php echo $config['WebSiteRootURL']; ?>u/<?php echo $_SESSION['Username']; ?>"><?php echo $_SESSION['Fullname']; ?></a><br/>
+<a href="<?php echo $global['webSiteRootURL']; ?>u/<?php echo $_SESSION['Username']; ?>"><?php echo $_SESSION['Fullname']; ?></a><br/>
 <span class='username_OF_postTime'>@<?php echo $_SESSION['Username']; ?></span>
 </td>
 </table>
-<form id="postingToDB" action="<?php echo $config['WebSiteRootURL']; ?>includes/wpost.php" method="post" enctype="multipart/form-data" style="margin: 0;">
-<div id="w_text" class="wpost_tabcontent" style="display:block;padding: 0px">
-    <textarea dir="auto" id="lang_rtl_ltr" class="post_textbox" placeholder="<?php echo lang('post_textbox_placeholder'); ?>" name="post_textbox" ></textarea>
-</div>
-<div id="w_photo" class="wpost_tabcontent">
-   <label>
-        <input type="file" name="w_photo" accept="image/png, image/jpeg, image/jpeg" onchange="photoPreview(this);" style="display: none" />
-       <div id='photo_preview' style="margin-top: 10px;order: 1px solid rgba(0, 0, 0, 0.1);overflow: hidden;width: 100px;height: 100px;display:none;position: relative;">
-       <label style="color: white">
+<form id="postingToDB" action="<?php echo $global['webSiteRootURL']; ?>includes/wpost.php" method="post" enctype="multipart/form-data" style="margin: 0;">
+  <div id="w_text" class="wpost_tabcontent" style="display:block;padding: 0px">
+      <textarea dir="auto" id="lang_rtl_ltr" class="post_textbox" placeholder="<?php echo lang('post_textbox_placeholder'); ?>" name="post_textbox" ></textarea>
+  </div>
+  <div id="w_photo" class="wpost_tabcontent">
+     <label>
+      <input type="file" name="w_photo" accept="image/png, image/jpeg, image/jpeg" onchange="photoPreview(this);" style="display: none" />
+      <div id='photo_preview' style="margin-top: 10px;order: 1px solid rgba(0, 0, 0, 0.1);overflow: hidden;width: 100px;height: 100px;display:none;position: relative;">
+      <label style="color: white">
         <button type="reset" name="reset" id="cancel_photo_preview" style="display: none"><span class="fa fa-times"></span></button>
-
-       </label>
-            <img id='photo_preview_src' src='#' alt='your image' style='height:100%;cursor: pointer;' />
-       </div>
-
-
-    <div id='photo_preview_box' style='cursor: pointer;display:block;width:100px;height:100px;border:2px dashed rgba(78, 178, 255, 0.8);text-align:center;'>
+      </label>
+        <img id='photo_preview_src' src='#' alt='your image' style='height:100%;cursor: pointer;' />
+      </div>
+      <div id='photo_preview_box' style='cursor: pointer;display:block;width:100px;height:100px;border:2px dashed rgba(78, 178, 255, 0.8);text-align:center;'>
         <span class='fa fa-image' style='    margin: 35%;font-size: 30px;color: rgba(78, 178, 255, 0.8);'></span>
-         </div>
-   </label>
-</div>
-<div id="w_title" class="wpost_tabcontent">
-<input type="text" name="w_title" maxlength="100" id="your_title" placeholder="<?php echo lang('w_title_inputText'); ?>" class="flat_solid_textfield"></input>
-<input type="hidden" name="check_path" value="<?php echo $config['WebSiteRootURL']; ?>" />
-/ 100
-</div>
-<div>
-<ul class="wpost_tab">
-    <li id="wt_text" style="float:<?php echo lang('w_post_li'); ?>;">
-    <button class="wpost_tablinks" onclick="wpost_tabs(event, 'w_text')"><span style="color: cornflowerblue;margin: 0px 5px;" class="fa fa-pencil"></span> <?php echo lang('wpost_write'); ?></button>
-    </li>
-    <li id="wt_photo" style="float:<?php echo lang('w_post_li'); ?>;">
-    <button class="wpost_tablinks" onclick="wpost_tabs(event, 'w_photo')"><span style="color: #4CAF50;margin: 0px 5px;" class="fa fa-camera"></span> <?php echo lang('wpost_upPhoto'); ?></button>
-    </li>
-    <li id="wt_location" style="float:<?php echo lang('w_post_li'); ?>;">
-    <button class="wpost_tablinks" onclick="wpost_tabs(event, 'w_title')"><span style="color: #ffb300;margin: 0px 5px;" class="fa fa-quote-right"></span> <?php echo lang('wpost_title'); ?></button>
-    </li>
-    <li style="float:<?php echo lang('w_post_li2'); ?>;">
-    <input class="default_flat_btn" type="submit" name="post_now" value="<?php echo lang('post_now'); ?>" style="margin: 5px;padding: 8px 10px;" />
-    </li>
-    <li style="float:<?php echo lang('w_post_li2'); ?>;">
-        <select id="p_privacy" style="margin: 5px; padding: 0px 10px; max-width: 110px; height: 35px;" name="w_privacy">
-            <option selected=""><?php echo lang('wpr_public'); ?></option>
-            <option><?php echo lang('wpr_followers'); ?></option>
-            <option></span> <?php echo lang('wpr_onlyme'); ?></option>
-        </select>
-    </li>
-</ul>
-</div>
-   </form>
+      </div>
+     </label>
+  </div>
+  <div id="w_title" class="wpost_tabcontent">
+  <input type="text" name="w_title" maxlength="100" id="your_title" placeholder="<?php echo lang('w_title_inputText'); ?>" class="flat_solid_textfield"></input>
+  <input type="hidden" name="check_path" value="<?php echo $global['webSiteRootURL']; ?>" />
+  / 100
+  </div>
+  <div>
+  <ul class="wpost_tab">
+      <li id="wt_text" style="float:<?php echo lang('w_post_li'); ?>;">
+      <button class="wpost_tablinks" onclick="wpost_tabs(event, 'w_text')"><span style="color: cornflowerblue;margin: 0px 5px;" class="fa fa-pencil"></span> <?php echo lang('wpost_write'); ?></button>
+      </li>
+      <li id="wt_photo" style="float:<?php echo lang('w_post_li'); ?>;">
+      <button class="wpost_tablinks" onclick="wpost_tabs(event, 'w_photo')"><span style="color: #4CAF50;margin: 0px 5px;" class="fa fa-camera"></span> <?php echo lang('wpost_upPhoto'); ?></button>
+      </li>
+      <li id="wt_location" style="float:<?php echo lang('w_post_li'); ?>;">
+      <button class="wpost_tablinks" onclick="wpost_tabs(event, 'w_title')"><span style="color: #ffb300;margin: 0px 5px;" class="fa fa-quote-right"></span> <?php echo lang('wpost_title'); ?></button>
+      </li>
+      <li style="float:<?php echo lang('w_post_li2'); ?>;">
+      <input class="default_flat_btn" type="submit" name="post_now" value="<?php echo lang('post_now'); ?>" style="margin: 5px;padding: 8px 10px;" />
+      </li>
+      <li style="float:<?php echo lang('w_post_li2'); ?>;">
+          <select id="p_privacy" style="margin: 5px; padding: 0px 10px; max-width: 110px; height: 35px;" name="w_privacy">
+              <option selected=""><?php echo lang('wpr_public'); ?></option>
+              <option><?php echo lang('wpr_followers'); ?></option>
+              <option></span> <?php echo lang('wpr_onlyme'); ?></option>
+          </select>
+      </li>
+  </ul>
+  </div>
+</form>
 <div class="loadingPosting"><p class="loadingPostingP">0</p></div>
 </div>
 <div id="getingNP"></div>
 <script>
 $(document).ready(function(){
-$('.loadingPosting').hide();
-var i = 1;
-$("#postingToDB").on('submit',function(e){
-if ($.trim($('.post_textbox').val()) != "") {
-var plus = i++;
-$("#getingNP").prepend("<div id='FetchingNewPostsDiv"+plus+"' style='display:none;'></div>");
-e.preventDefault();
-$(this).ajaxSubmit({
-beforeSend:function(){
-$("#postingToDB").slideUp();
-$('.loadingPosting').show();
-$(".loadingPostingP").css({'width' : '0%'});
-$(".loadingPostingP").html('0');
-},
-uploadProgress:function(event,position,total,percentCompelete){
-$(".loadingPostingP").css({'width' : percentCompelete + '%'});
-$(".loadingPostingP").html(percentCompelete);
-},
-success:function(data){
-  console.log(data);
-$("#postingToDB").slideDown(function(){
-    $('.loadingPosting').slideUp(function(){
-        $("#FetchingNewPostsDiv"+plus).html(data);
-        $("#FetchingNewPostsDiv"+plus).fadeIn();
+  $('.loadingPosting').hide();
+  var i = 1;
+  $("#postingToDB").on('submit',function(e){
+  if ($.trim($('.post_textbox').val()) != "") {
+    var plus = i++;
+    $("#getingNP").prepend("<div id='FetchingNewPostsDiv"+plus+"' style='display:none;'></div>");
+    e.preventDefault();
+    $(this).ajaxSubmit({
+    beforeSend:function(){
+    $("#postingToDB").slideUp();
+    $('.loadingPosting').show();
+    $(".loadingPostingP").css({'width' : '0%'});
+    $(".loadingPostingP").html('0');
+    },
+    uploadProgress:function(event,position,total,percentCompelete){
+    $(".loadingPostingP").css({'width' : percentCompelete + '%'});
+    $(".loadingPostingP").html(percentCompelete);
+    },
+    success:function(data){
+    $("#postingToDB").slideDown(function(){
+        $('.loadingPosting').slideUp(function(){
+            $("#FetchingNewPostsDiv"+plus).html(data);
+            $("#FetchingNewPostsDiv"+plus).fadeIn();
+        });
+        $('.post_textbox').css({'height':'95px'});
+        $("#postingToDB").clearForm();
+        $('#w_photo').hide();
+        $('#w_title').hide();
+        $('#p_privacy').val("<?php echo lang('wpr_public'); ?>");
+        $('#photo_preview').hide();
+        $('#cancel_photo_preview').hide();
+        $('#photo_preview_box').show();
     });
-    $('.post_textbox').css({'height':'95px'});
-    $("#postingToDB").clearForm();
-    $('#w_photo').hide();
-    $('#w_title').hide();
-    $('#p_privacy').val("<?php echo lang('wpr_public'); ?>");
-    $('#photo_preview').hide();
-    $('#cancel_photo_preview').hide();
-    $('#photo_preview_box').show();
-});
-}
-});
-}else{
-    return false;
-}
-});
+    }
+    });
+  }else{
+    alert("Please explain why you post your photo")
+      return false;
+  }
+  });
 });
 </script>
 

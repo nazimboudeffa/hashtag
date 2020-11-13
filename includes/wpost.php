@@ -1,9 +1,11 @@
 <?php
 session_start();
-if (!isset($config['SystemRootPath'])) {
-    include "../config/config.php";
-}
-include($config['SystemRootPath'] . "config/connect.php");
+if (!isset($global['systemRootPath'])) {
+    require_once '../config/config.php';
+};
+include "../config/connect.php";
+include($global['systemRootPath'] . "langs/set_lang.php");
+
 $post_id = rand(0,9999999)+time();
 $p_author_id = $_SESSION['id'];
 $p_author = $_SESSION['Fullname'];
@@ -37,20 +39,20 @@ $post_fileExt = end($post_kaboom);
 $post_fileName = time().rand().".".$post_fileExt;
     //================[ if not selected an image ]================
 if (!$post_fileTmpLoc) {
-echo "
-<p id='error_msg' onclick='hideMsg()'>
-".lang('errorPost_n2')."
-</p>
-";
+  echo "
+  <p id='error_msg' onclick='hideMsg()'>
+  ".lang('errorPost_n2')."
+  </p>
+  ";
 }else{
     //================[ if image size more than 4Mb ]================
-     if($post_fileSize > 4242880) {
-    echo "
-<p id='error_msg' onclick='hideMsg()'>
-".lang('errorPost_n3')."
-</p>
-";
-unlink($post_fileTmpLoc);
+  if($post_fileSize > 4242880) {
+  echo "
+  <p id='error_msg' onclick='hideMsg()'>
+  ".lang('errorPost_n3')."
+  </p>
+  ";
+  unlink($post_fileTmpLoc);
 } else {
     //================[ if image format not supported ]================
 if (!preg_match("/.(jpeg|jpg|png)$/i", $post_fileName) ) {
@@ -70,7 +72,10 @@ if ($post_fileErrorMsg == 1) {
 ";
 }else{
     //================[ check image path ]================
-$post_moveResult = move_uploaded_file($post_fileTmpLoc, $config['WebSiteRootURL'] . "imgs/user_post_img/" .$post_fileName);
+
+$imgsPath = $global['systemRootPath'] . "imgs/user_post_img/";
+
+$post_moveResult = move_uploaded_file($post_fileTmpLoc, $imgsPath. "$post_fileName");
     //================[ if image uploaded successfuly ]================
 if ($post_moveResult != true) {
     echo "
@@ -82,12 +87,12 @@ if ($post_moveResult != true) {
     $p_img = "user_post_img/".$post_fileName;
 }
 
-$iptdbsql = "INSERT INTO posts
+$iptdbsql = "INSERT INTO wpost
 (post_id,author_id,post_img,post_time,post_content,p_title,p_privacy)
 VALUES
 ( :post_id, :p_author_id, :p_img, :p_time, :p_content, :p_title, :p_privacy)
 ";
-$insert_post_toDB = $con->prepare($iptdbsql);
+$insert_post_toDB = $conn->prepare($iptdbsql);
 $insert_post_toDB->bindParam(':post_id', $post_id,PDO::PARAM_STR);
 $insert_post_toDB->bindParam(':p_author_id', $p_author_id,PDO::PARAM_INT);
 $insert_post_toDB->bindParam(':p_img', $p_img,PDO::PARAM_STR);
@@ -101,12 +106,12 @@ $insert_post_toDB->execute();
 }
 }
 }else{
-$iptdbsql = "INSERT INTO posts
+$iptdbsql = "INSERT INTO wpost
 (post_id,author_id,post_time,post_content,p_title,p_privacy)
 VALUES
 ( :post_id, :p_author_id, :p_time, :p_content, :p_title, :p_privacy)
 ";
-$insert_post_toDB = $con->prepare($iptdbsql);
+$insert_post_toDB = $conn->prepare($iptdbsql);
 $insert_post_toDB->bindParam(':post_id', $post_id,PDO::PARAM_STR);
 $insert_post_toDB->bindParam(':p_author_id', $p_author_id,PDO::PARAM_INT);
 $insert_post_toDB->bindParam(':p_time', $p_time,PDO::PARAM_INT);
@@ -115,12 +120,12 @@ $insert_post_toDB->bindParam(':p_title', $p_title,PDO::PARAM_STR);
 $insert_post_toDB->bindParam(':p_privacy', $p_privacy,PDO::PARAM_STR);
 $insert_post_toDB->execute();
 }
-include($config['SystemRootPath'] . "includes/fetch_users_info.php");
-include ($config['SystemRootPath'] . "includes/time_function.php");
-include ($config['SystemRootPath'] . "includes/num_k_m_count.php");
-$vpsql = "SELECT * FROM posts WHERE post_id = :post_id";
-$view_posts = $con->prepare($vpsql);
+include("fetch_users_info.php");
+include ("time_function.php");
+include ("num_k_m_count.php");
+$vpsql = "SELECT * FROM wpost WHERE post_id = :post_id";
+$view_posts = $conn->prepare($vpsql);
 $view_posts->bindParam(':post_id', $post_id, PDO::PARAM_INT);
 $view_posts->execute();
-include $config['SystemRootPath'] . "includes/fetch_posts.php";
+include "fetch_posts.php";
 ?>

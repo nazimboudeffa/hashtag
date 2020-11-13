@@ -1,12 +1,7 @@
 <?php
-if (!isset($config['SystemRootPath'])) {
-    include "../config/config.php";
-}
-include($config['SystemRootPath'] . "config/connect.php");
-
 $pid = $get_post_id;
 $show_comments_sql = "SELECT * FROM comments WHERE c_post_id=:pid ORDER BY c_time";
-$show_comments = $con->prepare($show_comments_sql);
+$show_comments = $conn->prepare($show_comments_sql);
 $show_comments->bindParam(':pid',$pid,PDO::PARAM_INT);
 $show_comments->execute();
 
@@ -21,8 +16,8 @@ while ($comments_fetch = $show_comments->fetch(PDO::FETCH_ASSOC)) {
     $time_4comm = $comments_fetch['c_time'];
     $comment_time = time_ago($time_4comm);
 
-    $query2_sql = "SELECT * FROM users WHERE id=:author_id_4comm";
-    $query2 = $con->prepare($query2_sql);
+    $query2_sql = "SELECT * FROM signup WHERE id=:author_id_4comm";
+    $query2 = $conn->prepare($query2_sql);
     $query2->bindParam(':author_id_4comm',$author_id_4comm,PDO::PARAM_INT);
     $query2->execute();
     while ($query_fetch2 = $query2->fetch(PDO::FETCH_ASSOC)) {
@@ -37,9 +32,9 @@ while ($comments_fetch = $show_comments->fetch(PDO::FETCH_ASSOC)) {
         }else{
         $verifypage_var = "";
     }
-    $uProfilePic_path = $config['WebSiteRootURL']."imgs/user_imgs/$query_fetch_userphoto2";
-    $uProfileUrl = $check_path."u/$query_fetch_username2";
-    $em_img_path = $check_path."imgs/emoticons/";
+    $uProfilePic_path = $global['webSiteRootURL']."imgs/user_imgs/$query_fetch_userphoto2";
+    $uProfileUrl = $global['webSiteRootURL']."u/$query_fetch_username2";
+    $em_img_path = $global['webSiteRootURL']."imgs/emoticons/";
     $comm_body = str_replace($em_char,$em_img,$content_4comm);
     $hashtags_url = '/(\#)([x00-\xFF]+[a-zA-Z0-9x00-\xFF_\w]+)/';
     $comm_body = preg_replace($hashtags_url, "<a href='".$check_path."hashtag/$2' title='#$2'>#$2</a>", $comm_body);
