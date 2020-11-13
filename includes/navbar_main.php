@@ -25,7 +25,7 @@ if ($uCheckSessionCount == 0) {
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="<?php echo $global['webSiteRootURL']; ?>home">Codeur de Jeux</a>
+            <a class="navbar-brand" href="<?php echo $global['webSiteRootURL']; ?>home">Hashtag</a>
         </div>
         <div class="collapse navbar-collapse" id="myNavbar">
             <ul class="<?php echo lang('ul_navbar_nav1'); ?>">

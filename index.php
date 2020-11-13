@@ -22,7 +22,7 @@ include_once $path."langs/set_lang.php";
 ?>
 <html dir="<? echo lang('html_dir'); ?>">
 <head>
-    <title><? echo lang('welcome'); ?> | Codeurdejeux</title>
+    <title><? echo lang('welcome'); ?> | Hashtag</title>
     <meta charset="UTF-8">
     <meta name="description" content="Hashtag is a social network platform helps you meet new friends and stay connected with your family and with who you are interested anytime anywhere.">
     <meta name="keywords" content="homepage,main,login,social network,social media,Hashtag,meet,free platform">
@@ -33,12 +33,12 @@ include_once $path."langs/set_lang.php";
     <body class="login_signup_body">
     <!--============[ Nav bar ]============-->
         <div class="login_signup_navbar">
-                <a href="index" class="login_signup_navbarLinks">Codeur de Jeux</a>
-                <a href="https://nazimboudeffa-codeurdejeux-blog.glitch.me/" class="btn btn-primary">CLIQUE ICI POUR COMMENCER A CODER</a>
+                <a href="index" class="login_signup_navbarLinks">Hashtag</a>
+                <a href="#" class="btn btn-primary">Blog</a>
         </div>
         <!--============[ main contains ]============-->
         <div class="login_signup_box">
-        <h3 align="center"><? echo lang('welcome_to'); ?> Codeur de Jeux</h3>
+        <h3 align="center"><? echo lang('welcome_to'); ?> Hashtag</h3>
         <p align="center" style="color: #999; margin-bottom: 10px;">Le réseau social francophone pour apprendre à coder des jeux HTML5 en 2D</p>
         <p align="center" style="color: #999; margin-bottom: 25px;">Le site devrait être payant car ça demande beaucoup de travail mais je l'ai laissé gratuit pour le moment</p>
 

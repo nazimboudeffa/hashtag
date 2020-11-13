@@ -289,7 +289,7 @@ function lang($txt){
     'login' => 'Login',
     'signup' => 'Sign Up',
     'welcome_to' => 'Bienvenue à',
-    'Hashtag_main_string' => 'Le site Codeur de Jeux est un réseau social pour apprendre à coder des jeux 2D en HTML',
+    'Hashtag_main_string' => 'Le site Hashtag est un réseau social de procratination',
     'login_now' => 'Login now',
     'forgot_password' => 'Mot de passe oublié ?',
     'dont_have_an_account' => 'Pas de compte ?',

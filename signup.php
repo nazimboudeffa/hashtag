@@ -32,8 +32,8 @@ include_once $path."langs/set_lang.php";
     <body class="login_signup_body">
     <!--============[ Nav bar ]============-->
     <div class="login_signup_navbar">
-            <a href="index" class="login_signup_navbarLinks">Codeur de Jeux</a>
-              <a href="https://nazimboudeffa-codeurdejeux-blog.glitch.me/" class="btn btn-primary">CLIQUE ICI POUR COMMENCER A CODER</a>
+            <a href="index" class="login_signup_navbarLinks">Hashtag</a>
+              <a href="#" class="btn btn-primary">Blog</a>
     </div>
     <!--============[ main contains ]============-->
     <div align="center">
