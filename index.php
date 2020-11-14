@@ -38,8 +38,8 @@ include_once $path."langs/set_lang.php";
         <!--============[ main contains ]============-->
         <div class="login_signup_box">
         <h3 align="center"><? echo lang('welcome_to'); ?> Hashtag</h3>
-        <p align="center" style="color: #999; margin-bottom: 10px;">Le réseau social francophone pour apprendre à coder des jeux HTML5 en 2D</p>
-        <p align="center" style="color: #999; margin-bottom: 25px;">Le site devrait être payant car ça demande beaucoup de travail mais je l'ai laissé gratuit pour le moment</p>
+        <p align="center" style="color: #999; margin-bottom: 10px;">The Social Network</p>
+        <p align="center" style="color: #999; margin-bottom: 25px;">To procrastinate on anything</p>
 
         <div align="center">
           <a href="login" class="login_signup_btn1"><? echo lang('login'); ?></a>
