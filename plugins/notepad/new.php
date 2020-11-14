@@ -1,12 +1,14 @@
 <?php
 error_reporting(E_ALL ^ E_NOTICE);
 session_start();
-
-include("../../config/connect.php");
-include("../../includes/fetch_users_info.php");
-include("../../includes/time_function.php");
-include("../../includes/country_name_function.php");
-include("../../includes/num_k_m_count.php");
+if (!isset($global['systemRootPath'])) {
+    require_once '../../config/config.php';
+};
+include($global['systemRootPath'] . "config/connect.php");
+include($global['systemRootPath'] . "includes/fetch_users_info.php");
+include($global['systemRootPath'] . "includes/time_function.php");
+include($global['systemRootPath'] . "includes/country_name_function.php");
+include($global['systemRootPath'] . "includes/num_k_m_count.php");
 if(!isset($_SESSION['Username'])){
     header("location: ../../index");
 }
