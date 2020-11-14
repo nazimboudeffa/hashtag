@@ -279,7 +279,7 @@ if (filter_var(htmlspecialchars($_GET['u']),FILTER_SANITIZE_STRING) == $row_user
             <p class="profile_mynotepad_box">
             </p>
                 <a href="../plugins/notepad/new" class="green_flat_btn"><?php echo lang('new_note');?></a>
-                <a href="../plugins/notepad/" class="silver_flat_btn"><?php echo lang('see_all_notes');?></a>
+                <a href="../plugins/notepad/list" class="silver_flat_btn"><?php echo lang('see_all_notes');?></a>
             </div>
             <?php
             }
