@@ -69,8 +69,8 @@ require_once "./plugins/plugins.php";
 $plugins = new Plugin();
 //echo $plugins->addMenu();
 ?>
-<p class="homeLinks_title">MES JEUX</p>
-<a href="./plugins/games/games.php"><p class="<?php echo lang('HLP_b'); ?>"><img src="imgs/main_icons/PHASER.png" />PhaserJS</p></a>
+<p class="homeLinks_title">Plugins</p>
+<a href="./plugins/games/games.php"><p class="<?php echo lang('HLP_b'); ?>"><img src="imgs/main_icons/PHASER.png" />Games</p></a>
 
 <!-- END PLUGIN -->
 
