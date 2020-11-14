@@ -10,8 +10,8 @@ case 'arabic':
 	include_once $global['systemRootPath'] . "langs/arabic.php";
 	break;
 default:
-	$_SESSION['language'] = "french";
-	include_once $global['systemRootPath'] . "langs/french.php";
+	$_SESSION['language'] = "english";
+	include_once $global['systemRootPath'] . "langs/english.php";
 	break;
 }
 ?>
