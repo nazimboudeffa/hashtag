@@ -23,6 +23,7 @@ if(!isset($_SESSION['Username'])){
     <meta name="keywords" content="social network,social media,Hashtag,meet,free platform">
     <meta name="author" content="Munaf Aqeel Mahdi">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <?php include "../../includes/endJScodes.php"; ?>
     <?php include "../../includes/head_imports_main.php";?>
     <style type="text/css">
         .noteContent{

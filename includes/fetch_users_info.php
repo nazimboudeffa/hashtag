@@ -3,7 +3,7 @@ $s_id = $_SESSION['id'];
 $s_fullname = $_SESSION['Fullname'];
 $s_username = $_SESSION['Username'];
 $s_userphoto = $_SESSION['Userphoto'];
-echo $_GET['u'];
+
 $un = filter_var(htmlspecialchars($_GET['u']),FILTER_SANITIZE_STRING);
 $uisql = "SELECT * FROM signup WHERE Username=:un";
 $que = $conn->prepare($uisql);

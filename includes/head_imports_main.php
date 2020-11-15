@@ -14,7 +14,7 @@ window.onbeforeunload = function(){
     var st = "0";
     $.ajax({
         type: "POST",
-        url: "<?php echo $global['webSiteRootURL']; ?>includes/userStatus.php",
+        url: "<?php echo $global['systemRootPath']; ?>includes/userStatus.php",
         data: {'st':st}
     });
 }

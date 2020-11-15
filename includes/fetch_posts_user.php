@@ -3,7 +3,7 @@ session_start();
 if (!isset($global['systemRootPath'])) {
     require_once '../config/config.php';
 };
-
+include("../config/connect.php");
 include("fetch_users_info.php");
 include ("time_function.php");
 include ("num_k_m_count.php");
@@ -45,8 +45,6 @@ $view_posts->bindValue(':plimit', (int)trim($plimit), PDO::PARAM_INT);
 $view_posts->execute();
 }
 $view_postsNum = $view_posts->rowCount();
-
-echo $view_postsNum;
 
 if ($view_postsNum > 0) {
 	include "fetch_posts.php";

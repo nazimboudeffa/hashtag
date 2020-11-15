@@ -41,8 +41,8 @@ if (isset($usrSessID)) {
     <meta name="keywords" content="social network,social media,Hashtag,meet,free platform">
     <meta name="author" content="Munaf Aqeel Mahdi">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <?php include $global['systemRootPath'] . "includes/head_imports_main.php";?>
-    </script>
     <style type="text/css">
         .user_info{
         text-align:<?php echo lang('user_info_align');?>;
@@ -72,8 +72,9 @@ if (isset($usrSessID)) {
         text-decoration: none;
         }
     </style>
+
 </head>
-<body onload="fetchUserPosts_DB()">
+<body onload="fetchPosts_DB_PROFILE()">
 <!--=============================[ NavBar ]========================================-->
 <?php include "../includes/navbar_main.php"; ?>
 <?php
@@ -662,7 +663,7 @@ $getphotos_num = $getphotos->rowCount();
                   <p style="color: #b1b1b1;text-align: center;padding: 15px;margin: 0px;font-size: 18px;"><?php echo lang('noMoreStories'); ?></p>
                 </div>
                 <div class="post  loading-info" id="LoadMorePostsBtn" style="display: none;">
-                  <button class="blue_flat_btn" style="width: 100%" onclick="fetchUserPosts_DB()">Load more</button>
+                  <button class="blue_flat_btn" style="width: 100%" onclick="fetchPosts_DB_PROFILE()">Load more</button>
                 </div>
                 <input type="hidden" id="GetLimitOfPosts" value="0">
 
@@ -716,6 +717,6 @@ border: 1px solid rgba(217, 217, 217, 0.36);
 ?>
 <!--=================================================footer==========================================================-->
     <?php include "../includes/footer.php"; ?>
-    <?php include "../includes/endJScodes.php"; ?>
+    <?php include($global['systemRootPath'] . "/includes/endJScodes.php"); ?>
     </body>
 </html>

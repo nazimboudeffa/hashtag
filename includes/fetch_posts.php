@@ -70,6 +70,7 @@ if($chShareCount == 0){
 $imgs_path = $global['webSiteRootURL'] . "imgs/";
 $em_img_path = $imgs_path."emoticons/";
 
+
 if (!isset($global['systemRootPath'])) {
     require_once '../config/config.php';
 };
