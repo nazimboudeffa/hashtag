@@ -10,13 +10,18 @@ services:
         volumes:
             - ./app:/var/www/html/
         ports:
-            - 8000:80
+#           - 8000:80
+            - 80
+        labels:
+          - "traefik.enable=true"
+          - "trafik.http.routers.php-apache.rule=Host:hashtagoo.cf"
+          - "traefik.port=80"
     db:
         container_name: db
         image: mysql
         restart: always
         environment:
-            MYSQL_ROOT_PASSWORD: 
+            MYSQL_ROOT_PASSWORD:
             MYSQL_DATABASE: $MYSQL_DATABASE
             MYSQL_USER: $MYSQL_USER
             MYSQL_PASSWORD: $MYSQL_PASSWORD
