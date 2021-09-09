@@ -4,7 +4,11 @@ Hashtag is an opensource social network made in PHP that let you create your own
 
 ## How to install
 
-Clone the repo
+Install apache, php, mysql, phpmyadmin on a fresh ubuntu
+
+Clone the repo, have fun!
+
+Clone the repo and 
 
 ## Docker Compose
 
