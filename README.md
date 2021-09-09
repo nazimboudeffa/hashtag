@@ -8,8 +8,6 @@ Install apache, php, mysql, phpmyadmin on a fresh ubuntu
 
 Clone the repo, have fun!
 
-Clone the repo and 
-
 ## Docker Compose
 
 Install docker-compose on a fresh Ubuntu 
