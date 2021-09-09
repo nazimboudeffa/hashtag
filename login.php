@@ -4,6 +4,8 @@ session_start();
 if (!isset($global['systemRootPath'])) {
     require_once 'config/config.php';
 };
+include_once $global['systemRootPath'] . "langs/set_lang.php";
+echo $global['systemRootPath'];
 if(isset($_SESSION['Username'])){
     header("location: home");
 }
@@ -20,7 +22,6 @@ if (is_file('home.php')){
 }elseif (is_file('../../home.php')){
     $path =  "../../";
 }
-include_once $global['systemRootPath'] . "langs/set_lang.php";
 ?>
 <html dir="<? echo lang('html_dir'); ?>">
 <head>
